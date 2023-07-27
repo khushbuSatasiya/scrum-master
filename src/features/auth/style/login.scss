@@ -1,0 +1,16 @@
+@import '../../../assets/styles/app.scss';
+
+.login-wrapper {
+	height: 100vh;
+	width: 100vw;
+	background-image: url(../../../assets/images/team-pic.png);
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+
+	.login-form {
+		background-color: $black;
+		@include padding(30px);
+		border-radius: 12px;
+	}
+}

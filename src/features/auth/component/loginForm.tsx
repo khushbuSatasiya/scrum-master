@@ -50,7 +50,7 @@ const LoginForm: React.FC = () => {
 			validateOnBlur
 			validateOnMount
 		>
-			<Form>
+			<Form className='login-form'>
 				<div className='form-item mb--25 position--relative'>
 					<Field
 						name='email'
@@ -89,7 +89,7 @@ const LoginForm: React.FC = () => {
 						className='text--red-400 font-size--xxs pl--10 error-message mt--10'
 					/>
 				</div>
-				<div className='flex align-items--center justify-content--end mb--15'>
+				{/* <div className='flex align-items--center justify-content--end mb--15'>
 					<Link
 						to={{
 							pathname: '/forgot-password'
@@ -98,7 +98,7 @@ const LoginForm: React.FC = () => {
 					>
 						Forgot Password?
 					</Link>
-				</div>
+				</div> */}
 				<button
 					disabled={loading}
 					className='login-btn width--full font-size--lg text--uppercase text--white border-radius--default no--border bg--primary'
