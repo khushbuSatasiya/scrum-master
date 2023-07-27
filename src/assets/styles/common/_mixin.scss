@@ -1,0 +1,102 @@
+@mixin margin($value...) {
+	margin: $value;
+}
+
+@mixin marginTop($value) {
+	margin-top: $value;
+}
+
+@mixin marginBottom($value) {
+	margin-bottom: $value;
+}
+
+@mixin marginLeft($value) {
+	margin-left: $value;
+}
+
+@mixin marginRight($value) {
+	margin-right: $value;
+}
+
+@mixin padding($value...) {
+	padding: $value;
+}
+
+@mixin paddingTop($value) {
+	padding-top: $value;
+}
+
+@mixin paddingBottom($value) {
+	padding-bottom: $value;
+}
+
+@mixin paddingLeft($value) {
+	padding-left: $value;
+}
+
+@mixin paddingRight($value) {
+	padding-right: $value;
+}
+
+@mixin transition($property, $duration, $timingFun: '') {
+	@if $timingFun== '' {
+		-webkit-transition: $property $duration;
+		transition: $property $duration;
+	} @else {
+		-webkit-transition: $property $duration $timingFun;
+		transition: $property $duration $timingFun;
+	}
+}
+
+@mixin getShadesColorClasses($colors, $property, $isImportant: '') {
+	@each $key, $value in $colors {
+		&-#{$key} {
+			@if $isImportant == 'important' {
+				#{$property}: $value !important;
+			} @else {
+				#{$property}: $value;
+			}
+		}
+	}
+}
+
+@mixin button() {
+	height: 35px;
+	@include padding(0 15px);
+	background-color: transparent;
+	font-weight: $font-bold;
+	color: $white-color;
+	font-size: 0.75rem;
+	border: 0;
+	border-radius: $border-radius-default;
+
+	&:focus {
+		outline: 0;
+	}
+}
+
+@mixin customButton($transparent, $width) {
+	width: $width;
+	height: 45px;
+	font-size: $font-size-browser-default;
+	font-weight: $font-medium;
+	line-height: 24px;
+	border-radius: 60px;
+	border: 2px solid $purple;
+	transition: 0.3s ease-in-out;
+	padding: 0;
+
+	&:hover {
+		border-color: rgba($color: $purple, $alpha: 0.9);
+		opacity: 0.9;
+	}
+
+	@if ($transparent) {
+		background-color: $white-color;
+		color: $purple;
+		margin-left: 20px;
+	} @else {
+		background: $purple;
+		color: $white-color;
+	}
+}

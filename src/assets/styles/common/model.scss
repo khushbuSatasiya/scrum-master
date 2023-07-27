@@ -1,0 +1,26 @@
+.modal {
+	width: $full-width;
+	height: $full-height;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: rgba(24, 25, 26, 0.98);
+	z-index: 999;
+
+	.modal__body {
+		.scroll-with--sticky-header {
+			overflow-y: auto;
+			&::-webkit-scrollbar {
+				width: 0;
+			}
+		}
+	}
+
+	&.confirmation-model {
+		.modal__body {
+			max-height: 300px !important;
+			box-sizing: content-box;
+			@include padding(0 20px);
+		}
+	}
+}

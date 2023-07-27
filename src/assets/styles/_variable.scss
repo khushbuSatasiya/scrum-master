@@ -1,0 +1,117 @@
+//Font family
+$font-rubik: 'Rubik';
+$font-drukCond: 'DrukCond';
+$font-oswald: 'Oswald';
+
+//Font Weight Variables
+$font-light: 300;
+$font-regular: 400;
+$font-medium: 500;
+$font-semi-bold: 600;
+$font-bold: 700;
+$font-extra-bold: 800;
+$font-heavy: 900;
+$font-extra-heavy: 1000;
+
+//Font size variables
+$font-size-xxs: 12px; //0.75rem
+$font-size-xs: 13px; // 0.8125rem
+$font-size-sm: 14px; //0.875rem
+$font-size-default: 15px; // 0.9375rem
+$font-size-browser-default: 16px; // 1rem (1rem = 16px)
+$font-size-md: 17px; //1.0625rem;
+$font-size-lg: 18px; //1.125rem;
+$font-size-xl: 19px; //1.1875rem;
+$font-size-xxl: 20px; //1.25rem;
+
+//Width and height variables
+$full-width: 100%;
+$full-height: 100%;
+$full-viewport-width: 100vw;
+$full-viewport-height: 100vh;
+
+//Color Palette variables
+$primary: #ed6a29;
+$white: #ffffff;
+$black: #18191a;
+$green: #1ca051;
+$comet: #676768;
+$violet: #4c9b92;
+$light-pink: #bf6196;
+$yellow: #f0a63d;
+
+$grey: (
+	50: #bdbdbd,
+	100: #828282,
+	150: #4e4e4e,
+	200: #464748,
+	300: #262728,
+	400: #252526,
+	500: #262626,
+	600: #515151
+);
+
+$red: (
+	100: #eb5757,
+	200: #ce3b4d,
+	300: #f23131,
+	400: #e33737,
+	500: #ff0000,
+	600: #d13838
+);
+
+$success: (
+	50: #ecfdf5,
+	100: #d1fae5,
+	200: #a7f3d0,
+	300: #6ee7b7,
+	400: #34d399,
+	500: #1f9471,
+	600: #059669,
+	700: #047857,
+	800: #065f46,
+	900: #064e3b
+);
+
+$purple: (
+	50: #ac4e83,
+	100: #e146a3,
+	200: #9747ff
+);
+
+$blue: (
+	100: #29a3ef,
+	200: #3478fb,
+	300: #3076b1
+);
+
+$orange--gradient: linear-gradient(270deg, #ed6a29 0%, rgba(41, 41, 41, 0) 100%);
+$blue--gradient: linear-gradient(270deg, #29a3ef 0%, rgba(41, 41, 41, 0) 100%);
+$violet--gradient: linear-gradient(270deg, #00acac 0%, rgba(41, 41, 41, 0) 100%);
+$green--gradient: linear-gradient(270deg, #219653 0%, rgba(41, 41, 41, 0) 100%);
+$purple--gradient: linear-gradient(270deg, #9b51e0 0%, rgba(41, 41, 41, 0) 100%);
+$yellow--gradient: linear-gradient(270deg, #fdad15 0%, rgba(41, 41, 41, 0) 100%);
+$black--gradient: linear-gradient(180deg, #252526 0%, #0d0d0d 100%);
+$grey--gradient: linear-gradient(180deg, #0d0d0d 0%, #252526 100%);
+
+//Line Height variables
+$line-height-sm: 1;
+$line-height-default: 1.2;
+$line-height-md: 1.5;
+$line-height-lg: 2;
+
+//Border radius width variables
+$border-radius-xxs: 2px;
+$border-radius-xs: 3px;
+$border-radius-sm: 4px;
+$border-radius-default: 6px;
+$border-radius-md: 8px;
+$border-radius-lg: 10px;
+$border-radius-xl: 16px;
+$border-radius-xxl: 20px;
+$border-radius-circle: 50%;
+
+//latter Spacing variables
+$letter-spacing-base: 0.5px !default;
+$letter-spacing-lg: 2px !default;
+$letter-spacing-xl: 4px !default;

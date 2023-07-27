@@ -1,0 +1,118 @@
+@media screen and (max-width: 1600px) {
+}
+
+@media screen and (max-width: 1440px) {
+	// Login Page
+	.login {
+		.logo-wrapper {
+			margin-bottom: 40px;
+
+			.logo_nextedgelogo {
+				max-width: 250px;
+			}
+
+			.logo_reelanalyticslogo {
+				max-width: 100px;
+			}
+		}
+
+		.form {
+			.form-item {
+				.input-field {
+					min-height: 60px;
+				}
+
+				.password-icon {
+					top: 16px;
+				}
+			}
+
+			.checkbox {
+				margin-bottom: 40px;
+			}
+
+			.login-btn {
+				min-height: 60px;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 1280px) {
+}
+
+@media screen and (max-width: 1280px) and (min-width: 1024px) {
+}
+
+@media screen and (max-width: 1024px) {
+	// Login Page
+	.login {
+		.logo-wrapper {
+			margin-bottom: 30px;
+
+			.logo_nextedgelogo {
+				max-width: 200px;
+			}
+			.logo_reelanalyticslogo {
+				max-width: 80px;
+			}
+		}
+
+		.form {
+			.form-item {
+				.input-field {
+					min-height: 50px;
+				}
+
+				.password-icon {
+					top: 11px;
+				}
+			}
+
+			.checkbox {
+				margin-bottom: 35px;
+			}
+
+			.login-btn {
+				min-height: 50px;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 992px) {
+	.show--lg {
+		display: none;
+	}
+
+	.hide--lg {
+		display: block;
+	}
+}
+@media screen and (max-width: 768px) {
+	.show--md {
+		display: none;
+	}
+
+	.hide--md {
+		display: block;
+	}
+}
+
+@media screen and (max-width: 576px) {
+	.show--sm {
+		display: none;
+	}
+
+	.hide--sm {
+		display: block;
+	}
+}
+@media screen and (max-width: 425px) {
+	.show--xs {
+		display: none;
+	}
+	.hide--xs {
+		display: block;
+	}
+}
