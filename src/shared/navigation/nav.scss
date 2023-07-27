@@ -1,0 +1,129 @@
+@import '../../assets/styles/app.scss';
+
+.navbar-wrapper {
+	.navbar-side {
+		width: 70px;
+		transition: all 0.3s ease-in-out;
+		overflow: hidden;
+
+		.navbar-side__link {
+			border-left: 2px solid transparent;
+			transition: all 0.3s linear;
+			padding: 10px 0;
+
+			.navbar-side__link--content {
+				height: 40px;
+				background-color: transparent;
+				transition: all 0.3s ease-in-out;
+
+				.navbar-side__link--icon {
+					padding: 10px 12px 10px 20px;
+
+					path {
+						transition: fill 0.3s ease-in-out;
+					}
+				}
+				.navbar-side__submenu--icon {
+					right: 20px;
+					path {
+						transition: fill 0.3s ease-in-out;
+					}
+				}
+				.navbar-side__link--label {
+					color: #88949d;
+				}
+			}
+			.navbar-side__submenu--content {
+				height: 15px;
+				background-color: transparent;
+				border-radius: 50px 0 0 50px;
+				transition: all 0.3s ease-in-out;
+				.navbar-side__link {
+					color: #88949d;
+				}
+			}
+			&:hover,
+			&:active {
+				border-left: 2px solid $primary;
+
+				.navbar-side__submenu--content,
+				.navbar-side__link--content {
+					background-color: $twilight-blue;
+
+					svg {
+						path {
+							fill: $primary;
+						}
+					}
+
+					.navbar-side__link--label {
+						color: $primary;
+					}
+				}
+			}
+		}
+
+		.navbar__active--menu {
+			border-left: 2px solid $primary;
+
+			.navbar-side__link--content {
+				background-color: $twilight-blue;
+
+				svg {
+					path {
+						fill: $primary;
+					}
+				}
+				.navbar-side__link--label {
+					color: $primary;
+				}
+			}
+		}
+		&.collapsed {
+			width: 250px;
+
+			.navbar-side__link {
+				.navbar-side__link--label {
+					display: flex;
+				}
+			}
+		}
+	}
+	.navbar-side__button {
+		margin: 10px 10px 10px 15px;
+		top: 50%;
+		right: -14px;
+		border: none;
+		background-color: $primary;
+
+		.navbar-side__button--icon {
+			transform: rotate(180deg);
+			transition: all 0.5s ease;
+		}
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: #1ab394;
+		outline: 0;
+	}
+}
+
+.navbar-wrapper {
+	.nav {
+		li {
+			a {
+				&:focus,
+				&:hover {
+					background-color: #19152f;
+					color: #5337ff;
+
+					svg {
+						path {
+							fill: #5337ff;
+						}
+					}
+				}
+			}
+		}
+	}
+}

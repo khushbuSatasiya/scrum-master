@@ -1,3 +1,6 @@
+import { Dashboard } from 'shared/components/icons/icons';
+import { ISideNavOpt } from 'shared/navigation/nav.interface';
+
 const FIRST_LEVEL_BREADCRUMBS = [{ name: 'home', link: '/' }];
 
 const NUMBER_REGEX = /[0-9]*\.?[0-9]*$/;
@@ -15,11 +18,20 @@ enum HASHTAG {
 	'meta_description' = 'Meta Description'
 }
 
+const SIDE_NAV_OPTIONS: ISideNavOpt[] = [
+	{
+		SvgIcon: Dashboard,
+		urlLink: '',
+		title: 'Home'
+	}
+];
+
 export {
 	FIRST_LEVEL_BREADCRUMBS,
 	NUMBER_REGEX,
 	PASSWORD_VALIDATOR_REGEX,
 	EMAIL_VALIDATOR_REGEX,
 	DATE_AND_TIME_REGEX,
-	HASHTAG
+	HASHTAG,
+	SIDE_NAV_OPTIONS
 };

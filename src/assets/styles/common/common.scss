@@ -500,6 +500,10 @@
 	@include marginLeft(40px);
 }
 
+.ml--60 {
+	@include marginLeft(60px);
+}
+
 .ml--auto {
 	@include marginLeft(auto);
 }
@@ -1229,6 +1233,10 @@
 
 .bg--black {
 	background-color: $black;
+}
+
+.bg--twilight-blue {
+	background-color: $twilight-blue;
 }
 
 .bg--red {
