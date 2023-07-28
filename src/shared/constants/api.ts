@@ -6,7 +6,10 @@ export const API_CONFIG = {
 	path: {
 		login: 'login',
 		forget: 'password/forgot',
-		reset: 'password/reset'
+		reset: 'password/reset',
+		getUserDetails: 'web/userDetails',
+		checkIn: 'web/checkIn',
+		checkOut: 'web/checkOut'
 	}
 };
 

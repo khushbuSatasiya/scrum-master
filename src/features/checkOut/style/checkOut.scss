@@ -1,0 +1,14 @@
+@import '../../../assets/styles/app.scss';
+
+.check-out {
+	max-width: 1000px;
+
+	.time-input {
+		width: 150px;
+	}
+
+	.task-status {
+		@include padding(30px);
+		border: 1px solid $black;
+	}
+}

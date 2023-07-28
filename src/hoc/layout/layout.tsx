@@ -5,7 +5,7 @@ const Layout: React.FC<PropsWithChildren> = (props) => {
 	return (
 		<div id='wrapper'>
 			<SideNav />
-			<div id='page-wrapper' className='full--width'>
+			<div id='page-wrapper' className='width--full'>
 				{props.children}
 			</div>
 		</div>

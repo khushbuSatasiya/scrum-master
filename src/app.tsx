@@ -9,6 +9,8 @@ import ResetPassword from 'features/auth/component/resetPassword';
 import { IState } from 'shared/interface/state';
 import Layout from 'hoc/layout/layout';
 import Dashboard from 'features/dashboard/component/dashboard';
+import CheckIn from 'features/checkIn/component/checkIn';
+import CheckOut from 'features/checkOut/component/checkOut';
 
 const App: React.FC = () => {
 	const isLogin: boolean = useSelector((state: IState) => state.auth.isLogin);
@@ -18,6 +20,8 @@ const App: React.FC = () => {
 			<Layout>
 				<Routes>
 					<Route path='/' element={<Dashboard />} />
+					<Route path='/check-in' element={<CheckIn />} />
+					<Route path='/check-out' element={<CheckOut />} />
 				</Routes>
 			</Layout>
 		);

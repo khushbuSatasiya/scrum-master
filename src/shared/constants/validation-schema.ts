@@ -59,10 +59,32 @@ const resetPasswordFormValidationSchema = Yup.object().shape({
 		.strict(true)
 });
 
+const checkInValidationSchema = Yup.object().shape({
+	time: Yup.string().required('Please enter time in valid format').strict(true),
+	array: Yup.array().of(
+		Yup.object().shape({
+			project: Yup.object().shape({
+				value: Yup.string().required('Please Enter project name').strict(true).nullable(true)
+			}),
+			task: Yup.string().required('Please add a task you have to perform today').strict(true)
+		})
+		// yup
+		// .string()
+		// .test(
+		//   'oneOfRequired',
+		//   'One of Field1, Field2, Field3 or Field4 must be entered',
+		//   function(item) {
+		// 	return item.value === ''
+		//   }
+		// )
+	)
+});
+
 export {
 	loginFormValidationSchema,
 	forgotPasswordFormValidationSchema,
 	resetPasswordValidationSchema,
 	changePasswordValidationSchema,
-	resetPasswordFormValidationSchema
+	resetPasswordFormValidationSchema,
+	checkInValidationSchema
 };
