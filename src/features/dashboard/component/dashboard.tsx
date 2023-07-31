@@ -21,7 +21,7 @@ const Dashboard: FC = () => {
 
 	const getUserDetails = () => {
 		httpService
-			.get(`${API_CONFIG.path.getUserDetails}?token=5e89dfa1c9eb6465550c31d425c4b303`)
+			.get(`${API_CONFIG.path.getUserDetails}?token=token`)
 
 			.then((res) => {
 				setAction(res.action);

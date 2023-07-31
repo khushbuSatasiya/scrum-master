@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
 
 import Select from 'react-select';
@@ -13,7 +13,7 @@ import { CUSTOM_STYLE } from 'shared/constants/constants';
 import '../style/checkIn.scss';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { notify } from 'shared/components/notification/notification';
 
 const CheckIn: React.FC = () => {
@@ -21,6 +21,10 @@ const CheckIn: React.FC = () => {
 
 	const [maxTime, setMaxTime] = useState('23:59');
 	const [projectNames, setProjectNames] = useState<any>([]);
+
+	const { search } = useLocation();
+	const query = useMemo(() => new URLSearchParams(search), [search]);
+	const token = query.get('token');
 
 	const handleSubmit = (values: FormikValues) => {
 		const uniqueTasks = new Set();
@@ -38,13 +42,13 @@ const CheckIn: React.FC = () => {
 		});
 
 		const payload = {
-			token: '5e89dfa1c9eb6465550c31d425c4b303',
+			token: token,
 			InTime: values.time,
 			tasks: uniqueIdsAndTasks
 		};
 
 		httpService
-			.post(`${API_CONFIG.path.checkIn}?token=5e89dfa1c9eb6465550c31d425c4b303`, payload)
+			.post(`${API_CONFIG.path.checkIn}?token=token`, payload)
 			.then(() => {
 				notify('You have successfully checked in', 'success');
 				navigate('/');
@@ -64,7 +68,7 @@ const CheckIn: React.FC = () => {
 
 	const getUserDetails = () => {
 		httpService
-			.get(`${API_CONFIG.path.getUserDetails}?token=5e89dfa1c9eb6465550c31d425c4b303`)
+			.get(`${API_CONFIG.path.getUserDetails}?token=token`)
 
 			.then((res) => {
 				const projectNames = res.projects.map((data: any) => {

@@ -1,27 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Select from 'react-select';
 import TimePicker from 'react-time-picker';
 
 import { DeleteIcon, PlusIcon } from 'shared/components/icons/icons';
-import { checkInValidationSchema, checkOutValidationSchema } from 'shared/constants/validation-schema';
+import { checkOutValidationSchema } from 'shared/constants/validation-schema';
 import { CUSTOM_STYLE } from 'shared/constants/constants';
+import httpService from 'shared/services/http.service';
+import { API_CONFIG } from 'shared/constants/api';
 
 import '../../checkIn/style/checkIn.scss';
 import '../style/checkOut.scss';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
-import httpService from 'shared/services/http.service';
-import { API_CONFIG } from 'shared/constants/api';
-import { useNavigate } from 'react-router-dom';
-import { notify } from 'shared/components/notification/notification';
-
-const options = [
-	{ value: 'fanblast', label: 'Fanblast' },
-	{ value: 'soundmind', label: 'Soundmind' },
-	{ value: 'scaletrack', label: 'Scaletrack' }
-];
 
 const status = [
 	{ value: 'pending', label: 'Pending' },
@@ -37,6 +30,10 @@ const CheckOut: React.FC = () => {
 	const [userTask, setUserTasks] = useState<any>([]);
 	const [projectNames, setProjectNames] = useState<any>([]);
 	const [pId, setPId] = useState<any>([]);
+
+	const { search } = useLocation();
+	const query = useMemo(() => new URLSearchParams(search), [search]);
+	const token = query.get('token');
 
 	const handleSubmit = (values: FormikValues) => {
 		const data = { ...values };
@@ -71,13 +68,13 @@ const CheckOut: React.FC = () => {
 		}
 
 		const payload = {
-			token: '5e89dfa1c9eb6465550c31d425c4b303',
+			token: token,
 			tasks: tasks,
 			OutTime: values.time
 		};
 
 		httpService
-			.post(`${API_CONFIG.path.checkOut}?token=5e89dfa1c9eb6465550c31d425c4b303`, payload)
+			.post(`${API_CONFIG.path.checkOut}?token=token`, payload)
 
 			.then(() => {
 				navigate('/');
@@ -97,7 +94,7 @@ const CheckOut: React.FC = () => {
 
 	const getUserDetails = () => {
 		httpService
-			.get(`${API_CONFIG.path.getUserDetails}?token=5e89dfa1c9eb6465550c31d425c4b303`)
+			.get(`${API_CONFIG.path.getUserDetails}?token=token`)
 
 			.then((res) => {
 				setUserTasks(res.findUser[0].usertasks);
