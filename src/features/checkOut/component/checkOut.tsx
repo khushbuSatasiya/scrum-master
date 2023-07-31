@@ -74,7 +74,7 @@ const CheckOut: React.FC = () => {
 		};
 
 		httpService
-			.post(`${API_CONFIG.path.checkOut}?token=token`, payload)
+			.post(`${API_CONFIG.path.checkOut}?token=${token}`, payload)
 
 			.then(() => {
 				navigate('/');
@@ -94,7 +94,7 @@ const CheckOut: React.FC = () => {
 
 	const getUserDetails = () => {
 		httpService
-			.get(`${API_CONFIG.path.getUserDetails}?token=token`)
+			.get(`${API_CONFIG.path.getUserDetails}?token=${token}`)
 
 			.then((res) => {
 				setUserTasks(res.findUser[0].usertasks);

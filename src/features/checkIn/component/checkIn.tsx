@@ -48,7 +48,7 @@ const CheckIn: React.FC = () => {
 		};
 
 		httpService
-			.post(`${API_CONFIG.path.checkIn}?token=token`, payload)
+			.post(`${API_CONFIG.path.checkIn}?token=${token}`, payload)
 			.then(() => {
 				notify('You have successfully checked in', 'success');
 				navigate('/');
@@ -68,7 +68,7 @@ const CheckIn: React.FC = () => {
 
 	const getUserDetails = () => {
 		httpService
-			.get(`${API_CONFIG.path.getUserDetails}?token=token`)
+			.get(`${API_CONFIG.path.getUserDetails}?token=${token}`)
 
 			.then((res) => {
 				const projectNames = res.projects.map((data: any) => {
