@@ -2,58 +2,52 @@ import React, { useEffect, useState } from 'react';
 import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
 
 import Select from 'react-select';
+import TimePicker from 'react-time-picker';
 
 import { DeleteIcon, PlusIcon } from 'shared/components/icons/icons';
 import { checkInValidationSchema } from 'shared/constants/validation-schema';
-
-import '../style/checkIn.scss';
-import { CUSTOM_STYLE } from 'shared/constants/constants';
-
-import TimePicker from 'react-time-picker';
-import 'react-time-picker/dist/TimePicker.css';
-import 'react-clock/dist/Clock.css';
 import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
+import { CUSTOM_STYLE } from 'shared/constants/constants';
+
+import '../style/checkIn.scss';
+import 'react-time-picker/dist/TimePicker.css';
+import 'react-clock/dist/Clock.css';
+import { useNavigate } from 'react-router-dom';
+import { notify } from 'shared/components/notification/notification';
 
 const CheckIn: React.FC = () => {
-	const [maxTime, setMaxTime] = useState('23:59');
-	const [checkInRes, setCheckInRes] = useState<any>([]);
+	const navigate = useNavigate();
 
-	const options = [
-		{ value: 'fanblast', label: 'Fanblast' },
-		{ value: 'soundmind', label: 'Soundmind' },
-		{ value: 'scaletrack', label: 'Scaletrack' }
-	];
+	const [maxTime, setMaxTime] = useState('23:59');
+	const [projectNames, setProjectNames] = useState<any>([]);
 
 	const handleSubmit = (values: FormikValues) => {
-		console.log(values.array, 'values');
-
 		const uniqueTasks = new Set();
 		const uniqueIdsAndTasks: any = [];
 
-		values.array.forEach((item: any, index: number) => {
-			const uniqueId = index;
-
+		values.array.forEach((item: any) => {
 			const taskName = item.task;
 
 			uniqueTasks.add(taskName);
 
 			uniqueIdsAndTasks.push({
-				projectId: uniqueId,
+				projectId: item.project.value,
 				taskName: taskName
 			});
 		});
 
 		const payload = {
-			token: 'U0311LTNK42',
+			token: '5e89dfa1c9eb6465550c31d425c4b303',
 			InTime: values.time,
 			tasks: uniqueIdsAndTasks
 		};
-		httpService
-			.post(`${API_CONFIG.path.checkIn}?token=b2fac31298d5f9c57cb3cc455d14ae0f`, payload)
 
-			.then((res) => {
-				console.log('res:', res);
+		httpService
+			.post(`${API_CONFIG.path.checkIn}?token=5e89dfa1c9eb6465550c31d425c4b303`, payload)
+			.then(() => {
+				notify('You have successfully checked in', 'success');
+				navigate('/');
 			})
 			.catch((err) => {
 				console.error(err);
@@ -70,19 +64,16 @@ const CheckIn: React.FC = () => {
 
 	const getUserDetails = () => {
 		httpService
-			.get(`${API_CONFIG.path.getUserDetails}?token=b2fac31298d5f9c57cb3cc455d14ae0f`)
+			.get(`${API_CONFIG.path.getUserDetails}?token=5e89dfa1c9eb6465550c31d425c4b303`)
 
 			.then((res) => {
-				setCheckInRes(res);
-				console.log(res, 'res');
-
-				const opt = res.projects.map((data: any, index: number) => {
+				const projectNames = res.projects.map((data: any) => {
 					return {
-						label: data.projectDetails.projectName,
-						value: data.projectDetails.id
+						label: data.projectName,
+						value: data.id
 					};
 				});
-				console.log('opt:', opt);
+				setProjectNames(projectNames);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -102,9 +93,10 @@ const CheckIn: React.FC = () => {
 			validateOnBlur
 			validateOnMount
 		>
-			{({ setFieldValue, values, handleSubmit, isValid, errors }) => {
+			{({ setFieldValue, values, handleSubmit, isValid }) => {
 				return (
 					<Form className='check-in__form flex flex--column mt--100' onSubmit={handleSubmit}>
+						<h4 className='text--primary no--margin mb--20 text--center'>Check In</h4>
 						<div className=' mb--25'>
 							<div className='form-item position--relative mb--20'>
 								<TimePicker
@@ -115,6 +107,8 @@ const CheckIn: React.FC = () => {
 									onChange={(time: any) => {
 										setFieldValue('time', time);
 									}}
+									format='HH:mm'
+									clockIcon={null}
 								/>
 
 								<ErrorMessage
@@ -129,7 +123,7 @@ const CheckIn: React.FC = () => {
 									render={(arrayHelper) => {
 										return values.array.map((item, index) => {
 											return (
-												<div key={index} className='flex justify-content--between'>
+												<div key={index} className='flex justify-content--between mb--20'>
 													<div className='form-item position--relative'>
 														<div className='input-select'>
 															<Select
@@ -137,7 +131,7 @@ const CheckIn: React.FC = () => {
 																onChange={(value: any) => {
 																	setFieldValue(`array[${index}].project`, value);
 																}}
-																options={options}
+																options={projectNames}
 																styles={CUSTOM_STYLE}
 																placeholder='Project names...'
 															/>

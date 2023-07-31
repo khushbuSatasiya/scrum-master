@@ -550,3 +550,17 @@ export const DeleteIcon: FC<IIconProps> = ({ height, width, className }) => {
 		</svg>
 	);
 };
+
+export const BulletIcon: FC<IIconProps> = ({ height, width, className }) => {
+	return (
+		<svg
+			fill='#000000'
+			width={width || '20'}
+			height={height || '20'}
+			className={className || ''}
+			viewBox='0 0 24 24'
+		>
+			<path d='M12 16.5a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0 1.5a6 6 0 100-12 6 6 0 000 12z' />
+		</svg>
+	);
+};

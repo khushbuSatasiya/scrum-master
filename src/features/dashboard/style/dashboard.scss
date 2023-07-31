@@ -4,3 +4,19 @@
 	width: 200px;
 	height: 50px;
 }
+
+.dashboard {
+	width: 100%;
+	max-width: 900px;
+	@include margin(0 auto);
+	background-color: $white;
+	@include padding(25px);
+	border-radius: 12px;
+	box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+
+	.status {
+		border: 1px solid $primary;
+		@include padding(2px 4px);
+		border-radius: 12px;
+	}
+}

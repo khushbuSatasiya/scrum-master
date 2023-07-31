@@ -68,15 +68,17 @@ const checkInValidationSchema = Yup.object().shape({
 			}),
 			task: Yup.string().required('Please add a task you have to perform today').strict(true)
 		})
-		// yup
-		// .string()
-		// .test(
-		//   'oneOfRequired',
-		//   'One of Field1, Field2, Field3 or Field4 must be entered',
-		//   function(item) {
-		// 	return item.value === ''
-		//   }
-		// )
+	)
+});
+
+const checkOutValidationSchema = Yup.object().shape({
+	time: Yup.string().required('Please enter time in valid format').strict(true),
+	tasks: Yup.array().of(
+		Yup.object().shape({
+			status: Yup.object().shape({
+				value: Yup.string().required('Please Enter project name').strict(true).nullable(true)
+			})
+		})
 	)
 });
 
@@ -86,5 +88,6 @@ export {
 	resetPasswordValidationSchema,
 	changePasswordValidationSchema,
 	resetPasswordFormValidationSchema,
-	checkInValidationSchema
+	checkInValidationSchema,
+	checkOutValidationSchema
 };
