@@ -15,6 +15,7 @@ const Dashboard: FC = () => {
 	const [userName, setUserName] = useState('');
 
 	const { token }: any = useParams();
+	console.log('token:', token);
 
 	const getUserDetails = useCallback(() => {
 		httpService

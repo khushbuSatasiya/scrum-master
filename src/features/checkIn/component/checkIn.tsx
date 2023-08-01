@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Select from 'react-select';
 import TimePicker from 'react-time-picker';
@@ -9,12 +10,11 @@ import { checkInValidationSchema } from 'shared/constants/validation-schema';
 import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
 import { CUSTOM_STYLE } from 'shared/constants/constants';
+import { notify } from 'shared/components/notification/notification';
 
 import '../style/checkIn.scss';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { notify } from 'shared/components/notification/notification';
 
 const CheckIn: React.FC = () => {
 	const navigate = useNavigate();
@@ -23,8 +23,12 @@ const CheckIn: React.FC = () => {
 	const [projectNames, setProjectNames] = useState<any>([]);
 
 	const { token } = useParams();
+	console.log('token:', token);
 
 	const handleSubmit = (values: FormikValues) => {
+		console.log('values:', values);
+		console.log('token:>>>>', token);
+
 		const uniqueTasks = new Set();
 		const uniqueIdsAndTasks: any = [];
 
@@ -49,7 +53,7 @@ const CheckIn: React.FC = () => {
 			.post(`${API_CONFIG.path.checkIn}?token=${token}`, payload)
 			.then(() => {
 				notify('You have successfully checked in', 'success');
-				navigate('/');
+				navigate(`/${token}`);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -65,8 +69,6 @@ const CheckIn: React.FC = () => {
 	}, []);
 
 	const getUserDetails = () => {
-		console.log('in');
-
 		httpService
 			.get(`${API_CONFIG.path.getUserDetails}?token=${token}`)
 

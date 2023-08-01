@@ -75,7 +75,7 @@ const CheckOut: React.FC = () => {
 			.post(`${API_CONFIG.path.checkOut}?token=${token}`, payload)
 
 			.then(() => {
-				navigate('/');
+				navigate(`/${token}`);
 			})
 			.catch((err) => {
 				console.error(err);
