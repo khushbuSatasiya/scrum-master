@@ -150,7 +150,7 @@ const CheckIn: React.FC = () => {
 													return (
 														<div
 															key={index}
-															className='flex justify-content--between mb--20'
+															className='fields flex justify-content--between mb--20'
 														>
 															<div className='form-item position--relative'>
 																<div className='input-select'>

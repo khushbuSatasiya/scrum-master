@@ -75,7 +75,7 @@ const Dashboard: FC = () => {
 											</p>
 											<div className='flex ml--10 mb--10'>
 												<BulletIcon />
-												<p className='text--black '>{task.task}</p>
+												<p className='text--black break-word--word'>{task.task}</p>
 											</div>
 										</div>
 									);
@@ -93,11 +93,11 @@ const Dashboard: FC = () => {
 			)}
 
 			{action === 'Success' && (
-				<div className='flex flex--column '>
+				<div className='flex flex--column mb--100'>
 					<h3 className='text--primary mb--20'>Hello, {userName}</h3>
 					<div className='dashboard'>
-						<div className='flex align-items--start justify-content--evenly'>
-							<div>
+						<div className='check-wrapper flex align-items--start justify-content--evenly'>
+							<div className='check-in__content'>
 								<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
 									Check-In Time:
 									<span className='font--regular ml--5 font-size--xxl'>{timeSheet.inTime}</span>
@@ -114,14 +114,14 @@ const Dashboard: FC = () => {
 												</p>
 												<div className='flex ml--10 mb--10'>
 													<BulletIcon />
-													<p className='text--black '>{task.task}</p>
+													<p className='text--black break-word--word'>{task.task}</p>
 												</div>
 											</div>
 										);
 									})}
 								</div>
 							</div>
-							<div>
+							<div className='check-out__content'>
 								<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
 									Check-Out Time:
 									<span className='font--regular ml--5 font-size--xxl'>{timeSheet.outTime}</span>
@@ -138,7 +138,7 @@ const Dashboard: FC = () => {
 												</p>
 												<div className='flex ml--10 mb--10'>
 													<BulletIcon />
-													<p className='text--black'>
+													<p className='text--black break-word--word'>
 														{task.task} <span className='status ml--5'>{task.status}</span>
 													</p>
 												</div>

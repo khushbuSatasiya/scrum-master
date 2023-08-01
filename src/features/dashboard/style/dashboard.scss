@@ -20,3 +20,17 @@
 		border-radius: 12px;
 	}
 }
+
+@media only screen and (max-width: 768px) {
+	.dashboard {
+		width: unset;
+		max-width: unset;
+		@include margin(unset);
+		.check-out__content {
+			@include marginTop(20px);
+		}
+		.check-wrapper {
+			flex-direction: column;
+		}
+	}
+}

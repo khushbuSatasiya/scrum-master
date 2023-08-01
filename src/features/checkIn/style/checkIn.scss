@@ -27,7 +27,7 @@
 
 	.task-input {
 		width: 400px;
-		height: 40px;
+		height: 44px;
 	}
 }
 .submit-btn {
@@ -38,4 +38,54 @@
 
 .react-time-picker__clock {
 	display: none;
+}
+
+@media only screen and (max-width: 768px) {
+	.check-in__form {
+		max-width: 715px;
+		@include padding(12px);
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.check-in__form {
+		.fields {
+			flex-direction: column;
+			@include marginBottom(40px);
+			.input-select {
+				@include marginBottom(12px);
+			}
+			.login-btn {
+				@include marginTop(12px);
+			}
+		}
+	}
+}
+
+@media only screen and (max-width: 425px) {
+	.check-in__form {
+		width: unset;
+		.task-input {
+			width: 350px;
+			@include marginBottom(30px);
+		}
+		.task-name {
+			text-align: center;
+			@include margin(8px);
+		}
+		.user-task {
+			flex-direction: column;
+		}
+		.extra-task {
+			flex-direction: column;
+			@include marginBottom(30px);
+		}
+		.input-select,
+		.task-input {
+			@include marginBottom(12px);
+		}
+		.task-status {
+			@include padding(12px);
+		}
+	}
 }

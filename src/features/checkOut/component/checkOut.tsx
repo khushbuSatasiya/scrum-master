@@ -216,7 +216,7 @@ const CheckOut: React.FC = () => {
 									{userTask.map((data: any, index: number) => {
 										return (
 											<div
-												className='flex align-items--center justify-content--around mb--20'
+												className='user-task flex align-items--center justify-content--around mb--20'
 												key={index}
 											>
 												<h6 className='text--black no--margin'>
@@ -254,7 +254,10 @@ const CheckOut: React.FC = () => {
 										render={(arrayHelper) => {
 											return values.array.map((item: any, index: number) => {
 												return (
-													<div key={index} className='flex justify-content--between'>
+													<div
+														key={index}
+														className='extra-task flex justify-content--between'
+													>
 														<div className='form-item position--relative'>
 															<div className='input-select'>
 																<Select
