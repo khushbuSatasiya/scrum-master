@@ -20,8 +20,10 @@ const App: React.FC = () => {
 			<Layout>
 				<Routes>
 					<Route path='/' element={<Dashboard />} />
-					<Route path='/check-in' element={<CheckIn />} />
-					<Route path='/check-out' element={<CheckOut />} />
+					<Route path='/:token' element={<Dashboard />} />
+					<Route path='/check-in/:token' element={<CheckIn />} />
+					<Route path='/check-out/:token' element={<CheckOut />} />
+					<Route path='*' element={<Navigate replace to='/' />} />
 				</Routes>
 			</Layout>
 		);

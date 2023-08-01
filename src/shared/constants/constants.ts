@@ -19,14 +19,6 @@ enum HASHTAG {
 	'meta_description' = 'Meta Description'
 }
 
-const SIDE_NAV_OPTIONS: ISideNavOpt[] = [
-	{
-		SvgIcon: Dashboard,
-		urlLink: '',
-		title: 'Home'
-	}
-];
-
 const CUSTOM_STYLE: object = {
 	option: (base: CSSProperties, state: any) => ({
 		...base,
@@ -151,6 +143,5 @@ export {
 	EMAIL_VALIDATOR_REGEX,
 	DATE_AND_TIME_REGEX,
 	HASHTAG,
-	SIDE_NAV_OPTIONS,
 	CUSTOM_STYLE
 };

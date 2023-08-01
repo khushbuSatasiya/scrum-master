@@ -3,12 +3,29 @@ import { Fragment, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import isEmpty from 'lodash/isEmpty';
 
-import { Logo, MenuDropDownClose, MenuDropDownOpen, SideNavIcon, SideNavLogo } from 'shared/components/icons/icons';
-import { SIDE_NAV_OPTIONS } from 'shared/constants/constants';
+import {
+	Dashboard,
+	Logo,
+	MenuDropDownClose,
+	MenuDropDownOpen,
+	SideNavIcon,
+	SideNavLogo
+} from 'shared/components/icons/icons';
 
 import { ISideNavOpt, ISubMenuType } from './nav.interface';
 
 import './nav.scss';
+
+const token = localStorage.getItem('token');
+console.log('token:', token);
+
+const SIDE_NAV_OPTIONS: ISideNavOpt[] = [
+	{
+		SvgIcon: Dashboard,
+		urlLink: `/${token}`,
+		title: 'Home'
+	}
+];
 
 const SideNav = () => {
 	const [sidebarOpen, setSideBarOpen] = useState(false);
@@ -23,7 +40,7 @@ const SideNav = () => {
 					sidebarOpen ? 'collapsed' : ''
 				}`}
 			>
-				<NavLink className='ml--10' to='/dashboard'>
+				<NavLink className='ml--10' to={`/${token}`}>
 					{!sidebarOpen && <SideNavLogo height='100' />}
 					{sidebarOpen && <Logo width='130' height='100' />}
 				</NavLink>

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import Select from 'react-select';
 import TimePicker from 'react-time-picker';
@@ -31,9 +31,7 @@ const CheckOut: React.FC = () => {
 	const [projectNames, setProjectNames] = useState<any>([]);
 	const [pId, setPId] = useState<any>([]);
 
-	const { search } = useLocation();
-	const query = useMemo(() => new URLSearchParams(search), [search]);
-	const token = query.get('token');
+	const { token } = useParams();
 
 	const handleSubmit = (values: FormikValues) => {
 		const data = { ...values };

@@ -1,5 +1,5 @@
-import { FC, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import '../style/dashboard.scss';
 import httpService from 'shared/services/http.service';
@@ -14,12 +14,9 @@ const Dashboard: FC = () => {
 	const [userTask, setUserTask] = useState<any>([]);
 	const [userName, setUserName] = useState('');
 
-	const { search } = useLocation();
-	const query = useMemo(() => new URLSearchParams(search), [search]);
-	const token = query.get('token');
-	console.log('token:', token);
+	const { token }: any = useParams();
 
-	const getUserDetails = () => {
+	const getUserDetails = useCallback(() => {
 		httpService
 			.get(`${API_CONFIG.path.getUserDetails}?token=${token}`)
 
@@ -33,22 +30,23 @@ const Dashboard: FC = () => {
 				err?.response?.status && setStatusCode(err?.response.status || '');
 				console.error(err);
 			});
-	};
+	}, [token]);
 
 	useEffect(() => {
 		getUserDetails();
-	}, []);
+		localStorage.setItem('token', token);
+	}, [getUserDetails, token]);
 
 	return (
-		<div className='display-flex-center mt--100'>
+		<div className='display-flex-center mt--100 flex--column'>
 			{(action === 'checkIn' || statusCode === 400) && (
 				<>
-					<h3 className='text--primary mb--20'>Hello, {userName && userName}</h3>
+					{userName && <h3 className='text--primary mb--20'>Hello, {userName}</h3>}
 					<button
 						className={`check-in__btn font-size--lg text--uppercase text--white border-radius--default no--border bg--primary ${
 							statusCode === 400 && 'pointer-events--none'
 						}`}
-						onClick={() => navigate('/check-in')}
+						onClick={() => navigate(`/check-in/${token}`)}
 					>
 						Check In
 					</button>
@@ -57,9 +55,10 @@ const Dashboard: FC = () => {
 
 			{action === 'checkOut' && (
 				<>
+					{userName && <h3 className='text--primary mb--20'>Hello, {userName}</h3>}
 					<button
 						className='check-in__btn font-size--lg text--uppercase text--white border-radius--default no--border bg--primary ml--15'
-						onClick={() => navigate('/check-out')}
+						onClick={() => navigate(`/check-out/${token}`)}
 					>
 						Check Out
 					</button>
