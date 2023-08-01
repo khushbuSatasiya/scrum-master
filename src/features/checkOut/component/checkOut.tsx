@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import Select from 'react-select';
 import TimePicker from 'react-time-picker';
@@ -51,10 +51,10 @@ const CheckOut: React.FC = () => {
 
 		const array = data.array.map((item: any) => {
 			return {
-				...item,
-				project: item.project.value,
+				projectId: item.project.value,
 				status: item.status.value,
-				taskId: ''
+				taskId: '',
+				taskName: item.task
 			};
 		});
 
@@ -120,6 +120,62 @@ const CheckOut: React.FC = () => {
 		getUserDetails();
 	}, []);
 
+	const initOpt = { label: 'project names...', value: '' };
+
+	const formatValues = (userTask: any) => {
+		const currentTime = new Date().toLocaleTimeString([], {
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+
+		if (userTask.length > 0) {
+			const tasksArray = userTask.map((task: any) => {
+				return {
+					taskId: task.id,
+					taskName: task.task,
+					status: { value: task.status, label: 'Status' }
+				};
+			});
+
+			return {
+				time: currentTime,
+				array: [
+					{
+						project: projectNames.length === 1 ? projectNames[0] : initOpt,
+						status: {
+							label: 'status...',
+							value: ''
+						},
+						task: ''
+					}
+				],
+				tasks: tasksArray
+			};
+		} else {
+			return {
+				time: currentTime,
+				array: [
+					{
+						project: projectNames.length === 1 ? projectNames[0] : initOpt,
+						status: {
+							label: 'status...',
+							value: ''
+						},
+						task: ''
+					}
+				],
+				tasks: [
+					{
+						taskId: '',
+						projectId: '',
+						taskName: '',
+						status: ''
+					}
+				]
+			};
+		}
+	};
+
 	return (
 		(userTask.length > 0 && (
 			<Formik
@@ -131,7 +187,7 @@ const CheckOut: React.FC = () => {
 				validateOnMount
 				enableReinitialize
 			>
-				{({ setFieldValue, values, handleSubmit, isValid, errors }) => {
+				{({ setFieldValue, values, handleSubmit, isValid }) => {
 					return (
 						<Form className='check-in__form check-out flex flex--column mt--100' onSubmit={handleSubmit}>
 							<h4 className='text--primary no--margin mb--20 text--center'>Check Out</h4>
@@ -309,60 +365,6 @@ const CheckOut: React.FC = () => {
 			</Formik>
 		)) || <></>
 	);
-};
-
-const formatValues = (userTask: any) => {
-	if (userTask.length > 0) {
-		const tasksArray = userTask.map((task: any) => {
-			return {
-				taskId: task.id,
-				taskName: task.task,
-				status: { value: task.status, label: 'Status' }
-			};
-		});
-		return {
-			time: '',
-			array: [
-				{
-					project: {
-						label: 'project names...',
-						value: ''
-					},
-					status: {
-						label: 'status...',
-						value: ''
-					},
-					task: ''
-				}
-			],
-			tasks: tasksArray
-		};
-	} else {
-		return {
-			time: '',
-			array: [
-				{
-					project: {
-						label: 'project names...',
-						value: ''
-					},
-					status: {
-						label: 'status...',
-						value: ''
-					},
-					task: ''
-				}
-			],
-			tasks: [
-				{
-					taskId: '',
-					projectId: '',
-					taskName: '',
-					status: ''
-				}
-			]
-		};
-	}
 };
 
 export default CheckOut;

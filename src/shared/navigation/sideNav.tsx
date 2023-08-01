@@ -17,7 +17,6 @@ import { ISideNavOpt, ISubMenuType } from './nav.interface';
 import './nav.scss';
 
 const token = localStorage.getItem('token');
-console.log('token:', token);
 
 const SIDE_NAV_OPTIONS: ISideNavOpt[] = [
 	{

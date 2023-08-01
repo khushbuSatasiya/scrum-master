@@ -1,10 +1,11 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import '../style/dashboard.scss';
 import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
 import { BulletIcon } from 'shared/components/icons/icons';
+
+import '../style/dashboard.scss';
 
 const Dashboard: FC = () => {
 	const navigate = useNavigate();
@@ -15,9 +16,8 @@ const Dashboard: FC = () => {
 	const [userName, setUserName] = useState('');
 
 	const { token }: any = useParams();
-	console.log('token:', token);
 
-	const getUserDetails = useCallback(() => {
+	const getUserDetails = useCallback((token: any) => {
 		httpService
 			.get(`${API_CONFIG.path.getUserDetails}?token=${token}`)
 
@@ -31,10 +31,10 @@ const Dashboard: FC = () => {
 				err?.response?.status && setStatusCode(err?.response.status || '');
 				console.error(err);
 			});
-	}, [token]);
+	}, []);
 
 	useEffect(() => {
-		getUserDetails();
+		getUserDetails(token);
 		localStorage.setItem('token', token);
 	}, [getUserDetails, token]);
 
@@ -57,6 +57,32 @@ const Dashboard: FC = () => {
 			{action === 'checkOut' && (
 				<>
 					{userName && <h3 className='text--primary mb--20'>Hello, {userName}</h3>}
+					<div className='dashboard mb--25'>
+						<div className='flex align-items--start justify-content--evenly'>
+							<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
+								Check-In Time:
+								<span className='font--regular ml--5 font-size--xxl'>{timeSheet.inTime}</span>
+							</h6>
+							<div className='flex flex--column'>
+								<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>
+									Planned Tasks:
+								</h6>
+								{userTask.map((task: any, index: number) => {
+									return (
+										<div key={index}>
+											<p className='text--black font-size--xxl font--regular mb--5'>
+												{task.projectdeatils.projectName}
+											</p>
+											<div className='flex ml--10 mb--10'>
+												<BulletIcon />
+												<p className='text--black '>{task.task}</p>
+											</div>
+										</div>
+									);
+								})}
+							</div>
+						</div>
+					</div>
 					<button
 						className='check-in__btn font-size--lg text--uppercase text--white border-radius--default no--border bg--primary ml--15'
 						onClick={() => navigate(`/check-out/${token}`)}
@@ -67,23 +93,23 @@ const Dashboard: FC = () => {
 			)}
 
 			{action === 'Success' && (
-				<div className='flex  flex--column '>
+				<div className='flex flex--column '>
 					<h3 className='text--primary mb--20'>Hello, {userName}</h3>
 					<div className='dashboard'>
 						<div className='flex align-items--start justify-content--evenly'>
 							<div>
-								<h6 className='text--black no--margin mb--25 font-size--28 '>
+								<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
 									Check-In Time:
 									<span className='font--regular ml--5 font-size--xxl'>{timeSheet.inTime}</span>
 								</h6>
 								<div className='flex flex--column'>
-									<h6 className='text--black no--margin mb--10 font-size--24 font--semi-bold'>
+									<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>
 										Planned Tasks:
 									</h6>
 									{userTask.map((task: any, index: number) => {
 										return (
 											<div key={index}>
-												<p className='text--black font-size--xxl font--medium'>
+												<p className='text--black font-size--xxl font--regular mb--5'>
 													{task.projectdeatils.projectName}
 												</p>
 												<div className='flex ml--10 mb--10'>
@@ -96,18 +122,18 @@ const Dashboard: FC = () => {
 								</div>
 							</div>
 							<div>
-								<h6 className='text--black no--margin mb--25 font-size--28 '>
+								<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
 									Check-Out Time:
 									<span className='font--regular ml--5 font-size--xxl'>{timeSheet.outTime}</span>
 								</h6>
 								<div className='flex flex--column'>
-									<h6 className='text--black no--margin mb--10 font-size--24 font--semi-bold'>
-										Completed Tasks
+									<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>
+										Completed Tasks:
 									</h6>
 									{userTask.map((task: any, index: number) => {
 										return (
 											<div key={index}>
-												<p className='text--black font-size--xxl font--medium'>
+												<p className='text--black font-size--xxl font--regular mb--5'>
 													{task.projectdeatils.projectName}
 												</p>
 												<div className='flex ml--10 mb--10'>

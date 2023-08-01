@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
 
 import Select from 'react-select';
 import TimePicker from 'react-time-picker';
@@ -21,14 +21,11 @@ const CheckIn: React.FC = () => {
 
 	const [maxTime, setMaxTime] = useState('23:59');
 	const [projectNames, setProjectNames] = useState<any>([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const { token } = useParams();
-	console.log('token:', token);
 
 	const handleSubmit = (values: FormikValues) => {
-		console.log('values:', values);
-		console.log('token:>>>>', token);
-
 		const uniqueTasks = new Set();
 		const uniqueIdsAndTasks: any = [];
 
@@ -80,9 +77,11 @@ const CheckIn: React.FC = () => {
 					};
 				});
 				setProjectNames(projectNames);
+				setIsLoading(false);
 			})
 			.catch((err) => {
 				console.error(err);
+				setIsLoading(false);
 			});
 	};
 
@@ -90,145 +89,163 @@ const CheckIn: React.FC = () => {
 		getUserDetails();
 	}, []);
 
+	const currentTime = new Date().toLocaleTimeString([], {
+		hour: '2-digit',
+		minute: '2-digit'
+	});
+
+	const initOpt = { label: 'project names...', value: '' };
+
+	const initialValues = {
+		time: currentTime,
+		array: [
+			{
+				project: projectNames.length === 1 ? projectNames[0] : initOpt,
+				task: ''
+			}
+		]
+	};
+
 	return (
-		<Formik
-			initialValues={initialValues}
-			onSubmit={handleSubmit}
-			validationSchema={checkInValidationSchema}
-			validateOnChange
-			validateOnBlur
-			validateOnMount
-		>
-			{({ setFieldValue, values, handleSubmit, isValid }) => {
-				return (
-					<Form className='check-in__form flex flex--column mt--100' onSubmit={handleSubmit}>
-						<h4 className='text--primary no--margin mb--20 text--center'>Check In</h4>
-						<div className=' mb--25'>
-							<div className='form-item position--relative mb--20'>
-								<TimePicker
-									value={values.time}
-									maxTime={maxTime}
-									className='time-input font--regular border-radius--sm text--black'
-									name='time'
-									onChange={(time: any) => {
-										setFieldValue('time', time);
-									}}
-									format='HH:mm'
-									clockIcon={null}
-								/>
+		<>
+			{!isLoading && (
+				<Formik
+					initialValues={initialValues}
+					onSubmit={handleSubmit}
+					validationSchema={checkInValidationSchema}
+					validateOnChange
+					validateOnBlur
+					validateOnMount
+				>
+					{({ setFieldValue, values, handleSubmit, isValid }) => {
+						return (
+							<Form className='check-in__form flex flex--column mt--100' onSubmit={handleSubmit}>
+								<h4 className='text--primary no--margin mb--20 text--center'>Check In</h4>
+								<div className=' mb--25'>
+									<div className='form-item position--relative mb--20'>
+										<TimePicker
+											value={values.time}
+											maxTime={maxTime}
+											className='time-input font--regular border-radius--sm text--black'
+											name='time'
+											onChange={(time: any) => {
+												setFieldValue('time', time);
+											}}
+											format='HH:mm'
+											clockIcon={null}
+											autoFocus
+										/>
 
-								<ErrorMessage
-									name={'time'}
-									component='p'
-									className='text--red-400 font-size--xxs pl--10 error-message mt--10'
-								/>
-							</div>
-							{
-								<FieldArray
-									name='array'
-									render={(arrayHelper) => {
-										return values.array.map((item, index) => {
-											return (
-												<div key={index} className='flex justify-content--between mb--20'>
-													<div className='form-item position--relative'>
-														<div className='input-select'>
-															<Select
-																value={values.array[index].project as any}
-																onChange={(value: any) => {
-																	setFieldValue(`array[${index}].project`, value);
-																}}
-																options={projectNames}
-																styles={CUSTOM_STYLE}
-																placeholder='Project names...'
-															/>
+										<ErrorMessage
+											name={'time'}
+											component='p'
+											className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+										/>
+									</div>
+									{
+										<FieldArray
+											name='array'
+											render={(arrayHelper) => {
+												return values.array.map((item, index) => {
+													return (
+														<div
+															key={index}
+															className='flex justify-content--between mb--20'
+														>
+															<div className='form-item position--relative'>
+																<div className='input-select'>
+																	<Select
+																		value={values.array[index].project as any}
+																		onChange={(value: any) => {
+																			setFieldValue(
+																				`array[${index}].project`,
+																				value
+																			);
+																		}}
+																		options={projectNames}
+																		styles={CUSTOM_STYLE}
+																		placeholder='Project names...'
+																	/>
+																</div>
+																<ErrorMessage
+																	name={`array[${index}].project.value`}
+																	component='p'
+																	className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+																/>
+															</div>
+
+															<div className='form-item position--relative'>
+																<Field
+																	name={`array[${index}].task`}
+																	type='text'
+																	className='input-field task-input font--regular  border-radius--sm text--black'
+																	autoComplete='off'
+																	placeholder='Enter a task'
+																	onChange={(e: any) =>
+																		setFieldValue(
+																			`array[${index}].task`,
+																			e.target.value
+																		)
+																	}
+																/>
+
+																<ErrorMessage
+																	name={`array[${index}].task`}
+																	component='p'
+																	className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+																/>
+															</div>
+															{index !== values.array.length - 1 ? (
+																<button
+																	className='login-btn  font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+																	type='button'
+																	onClick={() => {
+																		arrayHelper.remove(index);
+																	}}
+																>
+																	<DeleteIcon width='35px' height='35px' />
+																</button>
+															) : (
+																<button
+																	className='login-btn  font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+																	type='button'
+																	onClick={() => {
+																		isValid &&
+																			arrayHelper.push({
+																				time: '',
+																				project:
+																					projectNames.length === 1
+																						? projectNames[0]
+																						: initOpt,
+																				task: ''
+																			});
+																	}}
+																>
+																	<PlusIcon width='35px' height='35px' />
+																</button>
+															)}
 														</div>
-														<ErrorMessage
-															name={`array[${index}].project.value`}
-															component='p'
-															className='text--red-400 font-size--xxs pl--10 error-message mt--10'
-														/>
-													</div>
-
-													<div className='form-item position--relative'>
-														<Field
-															name={`array[${index}].task`}
-															type='text'
-															className='input-field task-input font--regular  border-radius--sm text--black'
-															autoComplete='off'
-															placeholder='Enter a task'
-															onChange={(e: any) =>
-																setFieldValue(`array[${index}].task`, e.target.value)
-															}
-														/>
-
-														<ErrorMessage
-															name={`array[${index}].task`}
-															component='p'
-															className='text--red-400 font-size--xxs pl--10 error-message mt--10'
-														/>
-													</div>
-													{index !== values.array.length - 1 ? (
-														<button
-															className='login-btn  font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
-															type='button'
-															onClick={() => {
-																arrayHelper.remove(index);
-															}}
-														>
-															<DeleteIcon width='35px' height='35px' />
-														</button>
-													) : (
-														<button
-															className='login-btn  font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
-															type='button'
-															onClick={() => {
-																isValid &&
-																	arrayHelper.push({
-																		time: '',
-																		project: {
-																			label: 'project names...',
-																			value: ''
-																		},
-																		task: ''
-																	});
-															}}
-														>
-															<PlusIcon width='35px' height='35px' />
-														</button>
-													)}
-												</div>
-											);
-										});
-									}}
-								/>
-							}
-						</div>
-						<div className='display-flex-center mt--20'>
-							<button
-								className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
-								type='submit'
-							>
-								submit
-							</button>
-						</div>
-					</Form>
-				);
-			}}
-		</Formik>
+													);
+												});
+											}}
+										/>
+									}
+								</div>
+								<div className='display-flex-center mt--20'>
+									<button
+										className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
+										type='submit'
+									>
+										submit
+									</button>
+								</div>
+							</Form>
+						);
+					}}
+				</Formik>
+			)}
+		</>
 	);
-};
-
-const initialValues = {
-	time: '',
-	array: [
-		{
-			project: {
-				label: 'project names...',
-				value: ''
-			},
-			task: ''
-		}
-	]
 };
 
 export default CheckIn;
