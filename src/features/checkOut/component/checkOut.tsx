@@ -6,7 +6,11 @@ import Select from 'react-select';
 import TimePicker from 'react-time-picker';
 
 import { DeleteIcon, PlusIcon } from 'shared/components/icons/icons';
-import { checkOutValidationSchema, checkOutValidationWithOptSchema } from 'shared/constants/validation-schema';
+import {
+	checkOutValidationSchema,
+	checkOutValidationWithOptSchema,
+	checkOutwithNoTaskValidationSchema
+} from 'shared/constants/validation-schema';
 import { CUSTOM_STYLE } from 'shared/constants/constants';
 import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
@@ -33,6 +37,7 @@ const CheckOut: React.FC = () => {
 	const [isShowExtraField, setIsShowExtraField] = useState(false);
 	const [userName, setUserName] = useState('');
 	const [timeSheet, setTimeSheet] = useState<any>([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	const { token } = useParams();
 
@@ -65,7 +70,11 @@ const CheckOut: React.FC = () => {
 		if (isAnyValueEmpty()) {
 			tasks = taskArray;
 		} else {
-			tasks = [...taskArray, ...array];
+			if (userTask.length > 0) {
+				tasks = [...taskArray, ...array];
+			} else {
+				tasks = [...array];
+			}
 		}
 
 		const payload = {
@@ -94,10 +103,12 @@ const CheckOut: React.FC = () => {
 	}, []);
 
 	const getUserDetails = () => {
+		setIsLoading(true);
 		httpService
 			.get(`${API_CONFIG.path.getUserDetails}?token=${token}`)
 
 			.then((res) => {
+				setIsLoading(false);
 				setUserTasks(res.findUser[0].usertasks);
 
 				res?.findUser && setUserName(res.findUser[0].realName);
@@ -118,6 +129,7 @@ const CheckOut: React.FC = () => {
 				setPId(projectId);
 			})
 			.catch((err) => {
+				setIsLoading(false);
 				console.error(err);
 			});
 	};
@@ -165,17 +177,26 @@ const CheckOut: React.FC = () => {
 	};
 
 	return (
-		(userTask.length > 0 && (
+		(!isLoading && (
 			<Formik
 				initialValues={formatValues(userTask)}
 				onSubmit={handleSubmit}
-				validationSchema={isShowExtraField ? checkOutValidationWithOptSchema : checkOutValidationSchema}
+				validationSchema={
+					isShowExtraField
+						? userTask.length > 0
+							? checkOutValidationWithOptSchema
+							: checkOutwithNoTaskValidationSchema
+						: userTask.length > 0
+						? checkOutValidationSchema
+						: ''
+				}
 				validateOnChange
 				validateOnBlur
 				validateOnMount
 				enableReinitialize
 			>
-				{({ setFieldValue, values, handleSubmit }) => {
+				{({ setFieldValue, values, handleSubmit, errors }) => {
+					console.log('errors:', errors);
 					return (
 						<>
 							{userName && (
@@ -215,6 +236,9 @@ const CheckOut: React.FC = () => {
 										</div>
 
 										<div className='task-status mt--20 mb--20'>
+											{userTask.length === 0 && (
+												<h6 className='text--black no--margin text--center'>No task added</h6>
+											)}
 											{userTask.map((data: any, index: number) => {
 												return (
 													<div

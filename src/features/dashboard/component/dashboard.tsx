@@ -67,6 +67,9 @@ const Dashboard: FC = () => {
 								<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>
 									Planned Tasks:
 								</h6>
+								{userTask.length === 0 && (
+									<p className='text--black font-size--xxl font--regular'>No task added</p>
+								)}
 								{userTask.map((task: any, index: number) => {
 									return (
 										<div key={index}>

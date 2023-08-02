@@ -22,6 +22,7 @@ const CheckIn: React.FC = () => {
 	const [maxTime, setMaxTime] = useState('23:59');
 	const [projectNames, setProjectNames] = useState<any>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	// const [isShowField, setIsShowField] = useState(false);
 
 	const { token } = useParams();
 
@@ -98,12 +99,7 @@ const CheckIn: React.FC = () => {
 
 	const initialValues = {
 		time: currentTime,
-		array: [
-			{
-				project: projectNames.length === 1 ? projectNames[0] : initOpt,
-				task: ''
-			}
-		]
+		array: [] as any
 	};
 
 	return (
@@ -116,13 +112,14 @@ const CheckIn: React.FC = () => {
 					validateOnChange
 					validateOnBlur
 					validateOnMount
+					enableReinitialize
 				>
-					{({ setFieldValue, values, handleSubmit, isValid }) => {
+					{({ setFieldValue, values, handleSubmit }) => {
 						return (
 							<Form className='check-in__form flex flex--column mt--100' onSubmit={handleSubmit}>
 								<h4 className='text--primary no--margin mb--20 text--center'>Check In</h4>
 								<div className=' mb--25'>
-									<div className='form-item position--relative mb--20'>
+									<div className='form-item flex justify-content--between mb--20'>
 										<TimePicker
 											value={values.time}
 											maxTime={maxTime}
@@ -142,62 +139,60 @@ const CheckIn: React.FC = () => {
 											className='text--red-400 font-size--xxs pl--10 error-message mt--10'
 										/>
 									</div>
-									{
-										<FieldArray
-											name='array'
-											render={(arrayHelper) => {
-												return values.array.map((item, index) => {
-													return (
-														<div
-															key={index}
-															className='fields flex justify-content--between mb--20'
-														>
-															<div className='form-item position--relative'>
-																<div className='input-select'>
-																	<Select
-																		value={values.array[index].project as any}
-																		onChange={(value: any) => {
-																			setFieldValue(
-																				`array[${index}].project`,
-																				value
-																			);
-																		}}
-																		options={projectNames}
-																		styles={CUSTOM_STYLE}
-																		placeholder='Project names...'
-																	/>
-																</div>
-																<ErrorMessage
-																	name={`array[${index}].project.value`}
-																	component='p'
-																	className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+
+									<FieldArray
+										name='array'
+										render={(arrayHelper) => {
+											return values.array && values.array.length > 0 ? (
+												values.array.map((item: any, index: any) => (
+													<div
+														key={index}
+														className='fields flex justify-content--between mb--20 align-items--start'
+													>
+														<div className='form-item position--relative'>
+															<div className='input-select'>
+																<Select
+																	value={values.array[index].project as any}
+																	onChange={(value: any) => {
+																		setFieldValue(`array[${index}].project`, value);
+																	}}
+																	options={projectNames}
+																	styles={CUSTOM_STYLE}
+																	placeholder='Project names...'
 																/>
 															</div>
+															<ErrorMessage
+																name={`array[${index}].project.value`}
+																component='p'
+																className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+															/>
+														</div>
 
-															<div className='form-item position--relative'>
-																<Field
-																	name={`array[${index}].task`}
-																	type='text'
-																	className='input-field task-input font--regular  border-radius--sm text--black'
-																	autoComplete='off'
-																	placeholder='Enter a task'
-																	onChange={(e: any) =>
-																		setFieldValue(
-																			`array[${index}].task`,
-																			e.target.value
-																		)
-																	}
-																/>
+														<div className='form-item position--relative'>
+															<Field
+																name={`array[${index}].task`}
+																type='text'
+																className='input-field task-input font--regular  border-radius--sm text--black'
+																autoComplete='off'
+																placeholder='Enter a task'
+																onChange={(e: any) =>
+																	setFieldValue(
+																		`array[${index}].task`,
+																		e.target.value
+																	)
+																}
+															/>
 
-																<ErrorMessage
-																	name={`array[${index}].task`}
-																	component='p'
-																	className='text--red-400 font-size--xxs pl--10 error-message mt--10'
-																/>
-															</div>
-															{index !== values.array.length - 1 ? (
+															<ErrorMessage
+																name={`array[${index}].task`}
+																component='p'
+																className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+															/>
+														</div>
+														{index !== values.array.length - 1 ? (
+															<div className='flex width--100px'>
 																<button
-																	className='login-btn  font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+																	className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 																	type='button'
 																	onClick={() => {
 																		arrayHelper.remove(index);
@@ -205,31 +200,65 @@ const CheckIn: React.FC = () => {
 																>
 																	<DeleteIcon width='35px' height='35px' />
 																</button>
-															) : (
+															</div>
+														) : (
+															<div className='flex width--100px'>
 																<button
-																	className='login-btn  font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+																	className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 																	type='button'
 																	onClick={() => {
-																		isValid &&
-																			arrayHelper.push({
-																				time: '',
-																				project:
-																					projectNames.length === 1
-																						? projectNames[0]
-																						: initOpt,
-																				task: ''
-																			});
+																		arrayHelper.remove(index);
+																		// index === 0 && setIsShowExtraField(false);
 																	}}
+																>
+																	<DeleteIcon width='35px' height='35px' />
+																</button>
+
+																<button
+																	className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+																	type='button'
+																	onClick={() => {
+																		arrayHelper.insert(index + 1, {
+																			time: '',
+																			project:
+																				projectNames.length === 1
+																					? projectNames[0]
+																					: initOpt,
+																			task: ''
+																		});
+																	}}
+																	disabled={values.array.some(
+																		(item: any) => !item.project.value || !item.task
+																	)}
 																>
 																	<PlusIcon width='35px' height='35px' />
 																</button>
-															)}
-														</div>
-													);
-												});
-											}}
-										/>
-									}
+															</div>
+														)}
+													</div>
+												))
+											) : (
+												<div className='flex justify-content--end'>
+													<button
+														className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+														type='button'
+														onClick={(e: any) => {
+															arrayHelper.push({
+																time: '',
+																project:
+																	projectNames.length === 1
+																		? projectNames[0]
+																		: initOpt,
+																task: ''
+															});
+														}}
+													>
+														<PlusIcon width='35px' height='35px' />
+													</button>
+												</div>
+											);
+										}}
+									/>
 								</div>
 								<div className='display-flex-center mt--20'>
 									<button
