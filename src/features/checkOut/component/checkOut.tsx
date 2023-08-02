@@ -44,9 +44,9 @@ const CheckOut: React.FC = () => {
 		});
 
 		const isAnyValueEmpty = () => {
-			return data.array.some(
-				(item: any) => item.project.value === '' || item.status.value === '' || item.status === ''
-			);
+			return data.array.some((item: any) => {
+				return item.project.value === '' || item.status.value === '' || item.task === '';
+			});
 		};
 
 		const array = data.array.map((item: any) => {
@@ -256,7 +256,7 @@ const CheckOut: React.FC = () => {
 												return (
 													<div
 														key={index}
-														className='extra-task flex justify-content--between'
+														className='extra-task flex justify-content--between mb--15'
 													>
 														<div className='form-item position--relative'>
 															<div className='input-select'>
@@ -331,16 +331,19 @@ const CheckOut: React.FC = () => {
 														) : (
 															<button
 																className='login-btn  font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
-																type='submit'
+																type='button'
 																onClick={() => {
 																	isValid &&
 																		arrayHelper.push({
-																			time: '',
-																			project: {
-																				label: 'project names...',
+																			project:
+																				projectNames.length === 1
+																					? projectNames[0]
+																					: initOpt,
+																			task: '',
+																			status: {
+																				label: 'status...',
 																				value: ''
-																			},
-																			task: ''
+																			}
 																		});
 																}}
 															>
