@@ -71,12 +71,34 @@ const checkInValidationSchema = Yup.object().shape({
 	)
 });
 
+const checkOutValidationWithOptSchema = Yup.object().shape({
+	time: Yup.string().required('Please enter time in valid format').strict(true),
+	tasks: Yup.array().of(
+		Yup.object().shape({
+			status: Yup.object().shape({
+				value: Yup.string().required('Please select project name').strict(true).nullable(true)
+			})
+		})
+	),
+	array: Yup.array().of(
+		Yup.object().shape({
+			project: Yup.object().shape({
+				value: Yup.string().required('Please select project name').strict(true).nullable(true)
+			}),
+			task: Yup.string().required('Please add a task you have to perform today').strict(true),
+			status: Yup.object().shape({
+				value: Yup.string().required('Please select task status').strict(true).nullable(true)
+			})
+		})
+	)
+});
+
 const checkOutValidationSchema = Yup.object().shape({
 	time: Yup.string().required('Please enter time in valid format').strict(true),
 	tasks: Yup.array().of(
 		Yup.object().shape({
 			status: Yup.object().shape({
-				value: Yup.string().required('Please Enter project name').strict(true).nullable(true)
+				value: Yup.string().required('Please select task status').strict(true).nullable(true)
 			})
 		})
 	)
@@ -89,5 +111,6 @@ export {
 	changePasswordValidationSchema,
 	resetPasswordFormValidationSchema,
 	checkInValidationSchema,
-	checkOutValidationSchema
+	checkOutValidationSchema,
+	checkOutValidationWithOptSchema
 };
