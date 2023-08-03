@@ -61,7 +61,9 @@ const Dashboard: FC = () => {
 						<div className='flex align-items--start justify-content--evenly'>
 							<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
 								Check-In Time:
-								<span className='font--regular ml--5 font-size--xxl'>{timeSheet.inTime}</span>
+								<span className='font--regular ml--5 font-size--xxl'>
+									{timeSheet.inTime.slice(0, -3)}
+								</span>
 							</h6>
 							<div className='flex flex--column'>
 								<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>
@@ -103,7 +105,9 @@ const Dashboard: FC = () => {
 							<div className='check-in__content'>
 								<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
 									Check-In Time:
-									<span className='font--regular ml--5 font-size--xxl'>{timeSheet.inTime}</span>
+									<span className='font--regular ml--5 font-size--xxl'>
+										{timeSheet.inTime.slice(0, -3)}
+									</span>
 								</h6>
 								<div className='flex flex--column'>
 									<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>
@@ -127,7 +131,9 @@ const Dashboard: FC = () => {
 							<div className='check-out__content'>
 								<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
 									Check-Out Time:
-									<span className='font--regular ml--5 font-size--xxl'>{timeSheet.outTime}</span>
+									<span className='font--regular ml--5 font-size--xxl'>
+										{timeSheet.outTime.slice(0, -3)}
+									</span>
 								</h6>
 								<div className='flex flex--column'>
 									<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>

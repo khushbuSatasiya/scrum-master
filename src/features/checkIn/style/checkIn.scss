@@ -28,6 +28,7 @@
 	.task-input {
 		width: 400px;
 		height: 44px;
+		@include padding(0 4px);
 	}
 }
 .submit-btn {

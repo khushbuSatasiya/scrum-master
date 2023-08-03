@@ -119,7 +119,7 @@ const CheckIn: React.FC = () => {
 							<Form className='check-in__form flex flex--column mt--100' onSubmit={handleSubmit}>
 								<h4 className='text--primary no--margin mb--20 text--center'>Check In</h4>
 								<div className=' mb--25'>
-									<div className='form-item flex justify-content--between mb--20'>
+									<div className='form-item flex flex--column justify-content--between mb--20'>
 										<TimePicker
 											value={values.time}
 											maxTime={maxTime}
@@ -228,7 +228,10 @@ const CheckIn: React.FC = () => {
 																		});
 																	}}
 																	disabled={values.array.some(
-																		(item: any) => !item.project.value || !item.task
+																		(item: any) =>
+																			!item.project.value ||
+																			!item.task.trim() ||
+																			item.task.startsWith(' ')
 																	)}
 																>
 																	<PlusIcon width='35px' height='35px' />

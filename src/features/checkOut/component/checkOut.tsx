@@ -196,7 +196,6 @@ const CheckOut: React.FC = () => {
 				enableReinitialize
 			>
 				{({ setFieldValue, values, handleSubmit, errors }) => {
-					console.log('errors:', errors);
 					return (
 						<>
 							{userName && (
@@ -373,7 +372,7 @@ const CheckOut: React.FC = () => {
 																		type='button'
 																		onClick={() => {
 																			arrayHelper.remove(index);
-																			index === 0 && setIsShowExtraField(false);
+																			// index === 0 && setIsShowExtraField(false);
 																		}}
 																	>
 																		<DeleteIcon width='35px' height='35px' />
