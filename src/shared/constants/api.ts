@@ -9,7 +9,9 @@ export const API_CONFIG = {
 		reset: 'password/reset',
 		getUserDetails: 'web/userDetails',
 		checkIn: 'web/checkIn',
-		checkOut: 'web/checkOut'
+		checkOut: 'web/checkOut',
+		leaveAndWfh: 'web/teamReport',
+		projectList: 'web/projectList'
 	}
 };
 
