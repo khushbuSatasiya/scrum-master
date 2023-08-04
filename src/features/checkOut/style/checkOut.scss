@@ -17,3 +17,40 @@
 		word-break: break-all;
 	}
 }
+
+.hours-popup {
+	background-color: rgba(0, 0, 0, 0.5) !important;
+
+	.modal-dialog {
+		max-width: 500px;
+		width: 100%;
+		@include margin(25vh auto);
+		background: $white;
+		box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.161);
+		border-radius: 20px;
+	}
+
+	.modal-body {
+		@include padding(20px);
+	}
+
+	.info-wrapper {
+		p {
+			width: 100%;
+			max-width: 999px;
+			margin: 0 auto;
+		}
+		// button {
+		// 	background-color: getColor($purple, 450);
+		// 	color: $white;
+		// 	border: none;
+		// 	padding: 10px;
+		// }
+	}
+
+	.hour-input {
+		border: 1px solid $black;
+		height: 40px;
+		@include padding(0 8px);
+	}
+}

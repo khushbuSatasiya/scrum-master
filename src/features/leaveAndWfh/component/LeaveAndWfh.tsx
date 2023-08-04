@@ -1,7 +1,7 @@
 import { FC, useCallback, useEffect, useState } from 'react';
-import { ErrorMessage, Form, Formik, FormikValues } from 'formik';
+import { ErrorMessage, Form, Formik } from 'formik';
 
-import Select from 'react-select';
+import Select, { GroupBase, OptionsOrGroups } from 'react-select';
 
 import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
@@ -47,12 +47,8 @@ const LeaveAndWfh: FC = () => {
 	};
 
 	const getUserDetails = useCallback((token: string) => {
-		const payload = {
-			token: token
-		};
-
 		httpService
-			.post(API_CONFIG.path.projectList, payload)
+			.get(`${API_CONFIG.path.projectList}?token=${token}`)
 
 			.then((res) => {
 				const projectNames = res.data.map((data: any) => {

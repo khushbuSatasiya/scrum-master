@@ -9,7 +9,8 @@ import { DeleteIcon, PlusIcon } from 'shared/components/icons/icons';
 import {
 	checkOutValidationSchema,
 	checkOutValidationWithOptSchema,
-	checkOutwithNoTaskValidationSchema
+	checkOutwithNoTaskValidationSchema,
+	hoursValidationSchema
 } from 'shared/constants/validation-schema';
 import { CUSTOM_STYLE } from 'shared/constants/constants';
 import httpService from 'shared/services/http.service';
@@ -19,6 +20,7 @@ import '../../checkIn/style/checkIn.scss';
 import '../style/checkOut.scss';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
+import CustomModal from 'shared/modal/modal';
 
 const status = [
 	{ value: 'pending', label: 'Pending' },
@@ -26,6 +28,8 @@ const status = [
 	{ value: 'continue', label: 'Continue' },
 	{ value: 'hold', label: 'Hold' }
 ];
+
+let initialValuesForHours: any = { hourArr: [] };
 
 const CheckOut: React.FC = () => {
 	const navigate = useNavigate();
@@ -38,10 +42,39 @@ const CheckOut: React.FC = () => {
 	const [userName, setUserName] = useState('');
 	const [timeSheet, setTimeSheet] = useState<any>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isShowPopUp, setIsShowPopUp] = useState(false);
+	const [uniqueProjectNames, setUniqueProjectNames] = useState<any>([]);
+	const [firstPayload, setFirstPayload] = useState<any>({});
+	// const [initialValuesForHours, setInitialValuesForHours] = useState<any>({ hourArr: [] });
 
 	const { token } = useParams();
 
 	const handleSubmit = (values: FormikValues) => {
+		const projects: any = {};
+
+		userTask.forEach((item: any) => {
+			projects[item.projectdeatils.projectName] = item.projectId;
+		});
+
+		values.array.forEach((item: any) => {
+			projects[item.project.label] = item.project.value;
+		});
+
+		const resultArray = Object.entries(projects).map(([projectName, projectId]) => ({
+			projectName,
+			projectId,
+			hour: undefined
+		}));
+
+		setUniqueProjectNames(resultArray);
+		initialValuesForHours = {
+			hourArr: resultArray
+		};
+		// setInitialValuesForHours({
+		// 	hourArr: resultArray
+		// });
+
+		setIsShowPopUp(true);
 		const data = { ...values };
 		const taskArray = data.tasks.map((item: any, index: number) => {
 			return {
@@ -82,10 +115,35 @@ const CheckOut: React.FC = () => {
 			tasks: tasks,
 			OutTime: values.time
 		};
+		setFirstPayload(payload);
+	};
 
+	const handleOnHours = (values: FormikValues) => {
+		const uniqueTasks = new Set();
+		const uniqueIdsAndHours: any = [];
+
+		values.hourArr.forEach((item: any) => {
+			const taskName = item.task;
+			uniqueTasks.add(taskName);
+			uniqueIdsAndHours.push({
+				projectId: '',
+				hours: item.hour || 0
+			});
+		});
+		const finalUniqueIdsAndHours = uniqueIdsAndHours.map((item: any, index: number) => {
+			return {
+				...item,
+				projectId: uniqueProjectNames[index].projectId
+			};
+		});
+		const payload = {
+			token: firstPayload.token,
+			tasks: firstPayload.tasks,
+			OutTime: firstPayload.OutTime,
+			projectHours: finalUniqueIdsAndHours
+		};
 		httpService
 			.post(`${API_CONFIG.path.checkOut}?token=${token}`, payload)
-
 			.then(() => {
 				navigate(`/${token}`);
 			})
@@ -178,280 +236,371 @@ const CheckOut: React.FC = () => {
 
 	return (
 		(!isLoading && (
-			<Formik
-				initialValues={formatValues(userTask)}
-				onSubmit={handleSubmit}
-				validationSchema={
-					isShowExtraField
-						? userTask.length > 0
-							? checkOutValidationWithOptSchema
-							: checkOutwithNoTaskValidationSchema
-						: userTask.length > 0
-						? checkOutValidationSchema
-						: ''
-				}
-				validateOnChange
-				validateOnBlur
-				validateOnMount
-				enableReinitialize
-			>
-				{({ setFieldValue, values, handleSubmit, errors }) => {
-					return (
-						<>
-							{userName && (
-								<h3 className='text--primary mb--20 mt--60 mb--60 text--center'>Hello, {userName}</h3>
-							)}
-							<Form className='check-in__form check-out flex flex--column ' onSubmit={handleSubmit}>
-								<h4 className='text--primary no--margin mb--20 text--center'>Check Out</h4>
-								<>
-									<div className=' mb--25'>
-										<div className='form-item position--relative'>
-											<div className='flex align-items--baseline'>
-												<h6 className='text--black no--margin mb--25 font-size--md font--semi-bold mr--15'>
-													Check-In:
-													<span className='font--regular ml--5 font-size--browser-default'>
-														{timeSheet.inTime}
-													</span>
-												</h6>
+			<>
+				<Formik
+					initialValues={formatValues(userTask)}
+					onSubmit={handleSubmit}
+					validationSchema={
+						isShowExtraField
+							? userTask.length > 0
+								? checkOutValidationWithOptSchema
+								: checkOutwithNoTaskValidationSchema
+							: userTask.length > 0
+							? checkOutValidationSchema
+							: ''
+					}
+					validateOnChange
+					validateOnBlur
+					validateOnMount
+					enableReinitialize
+				>
+					{({ setFieldValue, values, handleSubmit }) => {
+						return (
+							<>
+								{userName && (
+									<h3 className='text--primary mb--20 mt--60 mb--60 text--center'>
+										Hello, {userName}
+									</h3>
+								)}
+								<Form className='check-in__form check-out flex flex--column' onSubmit={handleSubmit}>
+									<h4 className='text--primary no--margin mb--20 text--center'>Check Out</h4>
+									<h6 className='text--black text--center no--margin mb--25 font-size--md font--semi-bold mr--15'>
+										Check-In:
+										<span className='font--regular ml--5 font-size--browser-default'>
+											{timeSheet.inTime.slice(0, -3)}
+										</span>
+									</h6>
+									<>
+										<div className=' mb--25'>
+											<div className='form-item position--relative'>
+												<div className='flex align-items--baseline'>
+													<TimePicker
+														value={values.time}
+														maxTime={maxTime}
+														className='time-input font--regular border-radius--sm text--black'
+														name='time'
+														onChange={(time: any) => {
+															setFieldValue('time', time);
+														}}
+														format='HH:mm'
+														clockIcon={null}
+													/>
+												</div>
 
-												<TimePicker
-													value={values.time}
-													maxTime={maxTime}
-													className='time-input font--regular border-radius--sm text--black'
-													name='time'
-													onChange={(time: any) => {
-														setFieldValue('time', time);
-													}}
-													format='HH:mm'
-													clockIcon={null}
+												<ErrorMessage
+													name={'time'}
+													component='p'
+													className='text--red-400 font-size--xxs pl--10 error-message mt--10'
 												/>
 											</div>
 
-											<ErrorMessage
-												name={'time'}
-												component='p'
-												className='text--red-400 font-size--xxs pl--10 error-message mt--10'
-											/>
-										</div>
-
-										<div className='task-status mt--20 mb--20'>
-											{userTask.length === 0 && (
-												<h6 className='text--black no--margin text--center'>No task added</h6>
-											)}
-											{userTask.map((data: any, index: number) => {
-												return (
-													<div
-														className='user-task flex align-items--center justify-content--around mb--20'
-														key={index}
-													>
-														<h6 className='text--black no--margin width--150px'>
-															{data.projectdeatils.projectName}
-														</h6>
-
-														<p className='task-name text--black width--150px'>
-															{data.task}
-														</p>
-														<div className='form-item position--relative'>
-															<div className='input-select'>
-																<Select
-																	value={values.tasks[index].status}
-																	onChange={(value: any) => {
-																		setFieldValue(`tasks[${index}].status`, value);
-																	}}
-																	options={status}
-																	styles={CUSTOM_STYLE}
-																	placeholder='status...'
-																	name={`tasks[${index}].status`}
-																/>
-															</div>
-															<ErrorMessage
-																name={`tasks[${index}].status.value`}
-																component='p'
-																key={index}
-																className='text--red-400 font-size--xxs pl--10 error-message mt--10'
-															/>
-														</div>
-													</div>
-												);
-											})}
-										</div>
-
-										<FieldArray
-											name='array'
-											render={(arrayHelper) => {
-												return values.array && values.array.length > 0 ? (
-													values.array.map((item: any, index: number) => (
+											<div className='task-status mt--20 mb--20'>
+												{userTask.length === 0 && (
+													<h6 className='text--black no--margin text--center'>
+														No task added
+													</h6>
+												)}
+												{userTask.map((data: any, index: number) => {
+													return (
 														<div
+															className='user-task flex align-items--center justify-content--around mb--20'
 															key={index}
-															className='extra-task flex justify-content--between mb--15'
 														>
+															<h6 className='text--black no--margin width--150px'>
+																{data.projectdeatils.projectName}
+															</h6>
+
+															<p className='task-name text--black width--150px'>
+																{data.task}
+															</p>
 															<div className='form-item position--relative'>
 																<div className='input-select'>
 																	<Select
-																		value={values.array[index].project as any}
+																		value={values.tasks[index].status}
 																		onChange={(value: any) => {
 																			setFieldValue(
-																				`array[${index}].project`,
-																				value
-																			);
-																		}}
-																		options={projectNames}
-																		styles={CUSTOM_STYLE}
-																		placeholder='Project names...'
-																	/>
-																</div>
-
-																<ErrorMessage
-																	name={`array[${index}].project.value`}
-																	component='p'
-																	className='text--red-400 font-size--xxs pl--10 error-message mt--10'
-																/>
-															</div>
-
-															<div className='form-item position--relative'>
-																<Field
-																	name={`array[${index}].task`}
-																	type='text'
-																	className='input-field task-input font--regular  border-radius--sm text--black'
-																	autoComplete='off'
-																	placeholder='Enter a task'
-																	onChange={(e: any) =>
-																		setFieldValue(
-																			`array[${index}].task`,
-																			e.target.value
-																		)
-																	}
-																/>
-
-																<ErrorMessage
-																	name={`array[${index}].task`}
-																	component='p'
-																	className='text--red-400 font-size--xxs pl--10 error-message mt--10'
-																/>
-															</div>
-
-															<div className='form-item position--relative'>
-																<div className='input-select'>
-																	<Select
-																		value={values.array[index].status as any}
-																		onChange={(value: any) => {
-																			setFieldValue(
-																				`array[${index}].status`,
+																				`tasks[${index}].status`,
 																				value
 																			);
 																		}}
 																		options={status}
 																		styles={CUSTOM_STYLE}
 																		placeholder='status...'
+																		name={`tasks[${index}].status`}
 																	/>
 																</div>
-
 																<ErrorMessage
-																	name={`array[${index}].status.value`}
+																	name={`tasks[${index}].status.value`}
 																	component='p'
+																	key={index}
 																	className='text--red-400 font-size--xxs pl--10 error-message mt--10'
 																/>
 															</div>
-
-															{index !== values.array.length - 1 ? (
-																<div className='flex width--100px'>
-																	<button
-																		className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
-																		type='button'
-																		onClick={() => {
-																			arrayHelper.remove(index);
-																		}}
-																	>
-																		<DeleteIcon width='35px' height='35px' />
-																	</button>
-																</div>
-															) : (
-																<div className='flex width--100px'>
-																	<button
-																		className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
-																		type='button'
-																		onClick={() => {
-																			arrayHelper.remove(index);
-																			// index === 0 && setIsShowExtraField(false);
-																		}}
-																	>
-																		<DeleteIcon width='35px' height='35px' />
-																	</button>
-
-																	<button
-																		className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
-																		type='button'
-																		onClick={() => {
-																			arrayHelper.insert(index + 1, {
-																				project:
-																					projectNames.length === 1
-																						? projectNames[0]
-																						: initOpt,
-																				task: '',
-																				status: {
-																					label: 'status...',
-																					value: ''
-																				}
-																			});
-																		}}
-																		disabled={values.array.some(
-																			(item: any) =>
-																				!item.project.value ||
-																				!item.task ||
-																				!item.status.value
-																		)}
-																	>
-																		<PlusIcon width='35px' height='35px' />
-																	</button>
-																</div>
-															)}
 														</div>
-													))
-												) : (
-													<div className='flex justify-content--end'>
-														<button
-															className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
-															type='button'
-															onClick={(e: any) => {
-																e.preventDefault();
-																e.stopPropagation();
-																setIsShowExtraField(!isShowExtraField);
-																arrayHelper.push({
-																	project:
-																		projectNames.length === 1
-																			? projectNames[0]
-																			: initOpt,
-																	status: {
-																		label: 'Status...',
-																		value: ''
-																	},
-																	task: ''
-																});
-															}}
-														>
-															<PlusIcon width='35px' height='35px' />
-														</button>
-													</div>
-												);
-											}}
-										/>
+													);
+												})}
+											</div>
+
+											<FieldArray
+												name='array'
+												render={(arrayHelper) => {
+													return values.array && values.array.length > 0 ? (
+														values.array.map((item: any, index: number) => (
+															<div
+																key={index}
+																className='extra-task flex justify-content--between mb--15'
+															>
+																<div className='form-item position--relative'>
+																	<div className='input-select'>
+																		<Select
+																			value={values.array[index].project as any}
+																			onChange={(value: any) => {
+																				setFieldValue(
+																					`array[${index}].project`,
+																					value
+																				);
+																			}}
+																			options={projectNames}
+																			styles={CUSTOM_STYLE}
+																			placeholder='Project names...'
+																		/>
+																	</div>
+
+																	<ErrorMessage
+																		name={`array[${index}].project.value`}
+																		component='p'
+																		className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+																	/>
+																</div>
+
+																<div className='form-item position--relative'>
+																	<Field
+																		name={`array[${index}].task`}
+																		type='text'
+																		className='input-field task-input font--regular  border-radius--sm text--black'
+																		autoComplete='off'
+																		placeholder='Enter a task'
+																		onChange={(e: any) =>
+																			setFieldValue(
+																				`array[${index}].task`,
+																				e.target.value
+																			)
+																		}
+																	/>
+
+																	<ErrorMessage
+																		name={`array[${index}].task`}
+																		component='p'
+																		className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+																	/>
+																</div>
+
+																<div className='form-item position--relative'>
+																	<div className='input-select'>
+																		<Select
+																			value={values.array[index].status as any}
+																			onChange={(value: any) => {
+																				setFieldValue(
+																					`array[${index}].status`,
+																					value
+																				);
+																			}}
+																			options={status}
+																			styles={CUSTOM_STYLE}
+																			placeholder='status...'
+																		/>
+																	</div>
+
+																	<ErrorMessage
+																		name={`array[${index}].status.value`}
+																		component='p'
+																		className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+																	/>
+																</div>
+
+																{index !== values.array.length - 1 ? (
+																	<div className='flex width--100px'>
+																		<button
+																			className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+																			type='button'
+																			onClick={() => {
+																				arrayHelper.remove(index);
+																			}}
+																		>
+																			<DeleteIcon width='35px' height='35px' />
+																		</button>
+																	</div>
+																) : (
+																	<div className='flex width--100px'>
+																		<button
+																			className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+																			type='button'
+																			onClick={() => {
+																				arrayHelper.remove(index);
+																				// index === 0 && setIsShowExtraField(false);
+																			}}
+																		>
+																			<DeleteIcon width='35px' height='35px' />
+																		</button>
+
+																		<button
+																			className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+																			type='button'
+																			onClick={() => {
+																				arrayHelper.insert(index + 1, {
+																					project:
+																						projectNames.length === 1
+																							? projectNames[0]
+																							: values.array[index]
+																									.project,
+																					task: '',
+																					status: {
+																						label: 'status...',
+																						value: ''
+																					}
+																				});
+																			}}
+																			disabled={values.array.some(
+																				(item: any) =>
+																					!item.project.value ||
+																					!item.task ||
+																					!item.status.value
+																			)}
+																		>
+																			<PlusIcon width='35px' height='35px' />
+																		</button>
+																	</div>
+																)}
+															</div>
+														))
+													) : (
+														<div className='flex justify-content--end'>
+															<button
+																className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
+																type='button'
+																onClick={(e: any) => {
+																	e.preventDefault();
+																	e.stopPropagation();
+																	setIsShowExtraField(!isShowExtraField);
+																	arrayHelper.push({
+																		project:
+																			projectNames.length === 1
+																				? projectNames[0]
+																				: initOpt,
+																		status: {
+																			label: 'Status...',
+																			value: ''
+																		},
+																		task: ''
+																	});
+																}}
+															>
+																<PlusIcon width='35px' height='35px' />
+															</button>
+														</div>
+													);
+												}}
+											/>
+										</div>
+									</>
+									<div className='display-flex-center mt--20'>
+										<button
+											className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
+											type='submit'
+										>
+											Continue
+										</button>
 									</div>
-								</>
-								<div className='display-flex-center mt--20'>
-									<button
-										className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
-										type='submit'
-									>
-										submit
-									</button>
-								</div>
-							</Form>
-						</>
-					);
-				}}
-			</Formik>
+								</Form>
+							</>
+						);
+					}}
+				</Formik>
+				{isShowPopUp && initialValuesForHours.hourArr.length >= 0 && (
+					<CustomModal show handleClose={() => setIsShowPopUp(false)} className='hours-popup'>
+						<Formik
+							initialValues={initialValuesForHours}
+							validationSchema={hoursValidationSchema}
+							validateOnChange
+							validateOnBlur
+							enableReinitialize
+							// isInitialValid={false}
+							onSubmit={handleOnHours}
+						>
+							{({ setFieldValue, values, handleSubmit }) => {
+								return (
+									<Form onSubmit={handleSubmit}>
+										{/* <h4 className='text--primary no--margin mb--20 text--center'>Team Report</h4> */}
+										<div className='flex flex flex--column justify-content--around'>
+											<FieldArray
+												name='hourArr'
+												render={() => {
+													return (
+														// values.hourArr &&
+														// values.hourArr.length > 0 &&
+														values.hourArr.map((item: any, index: number) => (
+															<div
+																key={item.projectName}
+																className='flex justify-content--around mb--25'
+															>
+																<h6 className='text--black no--margin'>
+																	{item.projectName}
+																</h6>
+																<div className='form-item display-flex-center'>
+																	<div className='text-input text--black'>
+																		<Field
+																			name={`hourArr[${index}].hour`}
+																			type='number'
+																			className='input-field hour-input font--regular  border-radius--sm text--black'
+																			autoComplete='off'
+																			placeholder='Enter hours'
+																			onChange={(e: any) =>
+																				setFieldValue(
+																					`hourArr[${index}].hour`,
+																					e.target.value
+																				)
+																			}
+																		/>
+																	</div>
+																	<ErrorMessage
+																		name={`hourArr[${index}].hour`}
+																		component='p'
+																		className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+																	/>
+																</div>
+															</div>
+														))
+													);
+												}}
+											/>
+										</div>
+										<div className='display-flex-center mt--20'>
+											<button
+												className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
+												type='submit'
+												// onClick={() => {
+												// 	// (errors.hourArr as Array<string>)?.forEach((element, index) => {
+												// 	// 	console.log(element);
+												// 	// 	setFieldTouched(`hourArr[${index}].hour`, true);
+												// 	// });
+												// }}
+											>
+												submit
+											</button>
+										</div>
+									</Form>
+								);
+							}}
+						</Formik>
+					</CustomModal>
+				)}
+			</>
 		)) || <></>
 	);
 };
+
+// const initialValuesForHours = {
+// 	array: []
+// };
 
 export default CheckOut;

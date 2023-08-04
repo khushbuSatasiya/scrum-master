@@ -223,7 +223,7 @@ const CheckIn: React.FC = () => {
 																			project:
 																				projectNames.length === 1
 																					? projectNames[0]
-																					: initOpt,
+																					: values.array[index].project,
 																			task: ''
 																		});
 																	}}

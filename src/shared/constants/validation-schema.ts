@@ -131,6 +131,41 @@ const checkOutwithNoTaskValidationSchema = Yup.object().shape({
 	)
 });
 
+// const hoursValidationSchema = Yup.object().shape({
+// 	array: Yup.array().of(
+// 		Yup.object().shape({
+// 			hour: Yup.number()
+// 				.required('Field is required')
+// 				.test('custom-validation', 'Enter up to 16 numbers', function (value) {
+// 					const inputValue = String(value);
+
+// 					const numbersCount = inputValue.match(/\d/g)?.length || 0;
+
+// 					return numbersCount > 0 && numbersCount <= 16;
+// 				})
+// 		})
+// 	)
+// });
+
+const hoursValidationSchema = Yup.object().shape({
+	hourArr: Yup.array().of(
+		Yup.object().shape({
+			hour: Yup.number().required('Field is required')
+			// .typeError('Hour must be a number')
+			// .integer('Hour must be an integer')
+			// .min(1, 'Hour must be greater than or equal to 1')
+			// .max(16, 'Hour must be less than or equal to 24')
+			// .test('custom-validation', 'Enter up to 16 numbers', function (value) {
+			// 	const inputValue = String(value);
+
+			// 	const numbersCount = inputValue.match(/\d/g)?.length || 0;
+
+			// 	return numbersCount > 0 && numbersCount <= 16;
+			// })
+		})
+	)
+});
+
 export {
 	loginFormValidationSchema,
 	forgotPasswordFormValidationSchema,
@@ -140,5 +175,6 @@ export {
 	checkInValidationSchema,
 	checkOutValidationSchema,
 	checkOutValidationWithOptSchema,
-	checkOutwithNoTaskValidationSchema
+	checkOutwithNoTaskValidationSchema,
+	hoursValidationSchema
 };
