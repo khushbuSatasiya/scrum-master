@@ -1,15 +1,16 @@
 import { FC, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { ErrorMessage, Form, Formik } from 'formik';
 
-import Select, { GroupBase, OptionsOrGroups } from 'react-select';
+import Select from 'react-select';
+import { isEmpty } from 'lodash';
 
 import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
+import { changedDateFormat } from 'shared/util/utility';
+import { CUSTOM_STYLE } from 'shared/constants/constants';
 
 import '../style/LeaveAndWfh.scss';
-import { useParams } from 'react-router-dom';
-import { CUSTOM_STYLE } from 'shared/constants/constants';
-import { isEmpty } from 'lodash';
 
 const months = [
 	{ value: '1', label: 'January' },
@@ -92,15 +93,6 @@ const LeaveAndWfh: FC = () => {
 		leaveAndWfh(month, token, project);
 	}, [leaveAndWfh, month, token, project]);
 
-	const formatDate = () => {
-		const dateObject = new Date('2023-09-01');
-		const day = dateObject.getDate();
-		const month = dateObject.getMonth() + 1; // Months are 0-based, so add 1
-		const year = dateObject.getFullYear();
-
-		return `${day < 10 ? '0' : ''}${day}-${month < 10 ? '0' : ''}${month}-${year}`;
-	};
-
 	return (
 		<>
 			<Formik
@@ -172,7 +164,7 @@ const LeaveAndWfh: FC = () => {
 						<tbody>
 							{Object.keys(leaveAndWfhData.leave).map((date) => (
 								<tr key={date}>
-									<td className='text--black'>{date}</td>
+									<td className='text--black'>{changedDateFormat(date)}</td>
 									<td className='text--black'>{leaveAndWfhData.leave[date].join(', ')}</td>
 									<td className='text--black'>{leaveAndWfhData.wfh[date].join(', ')}</td>
 								</tr>

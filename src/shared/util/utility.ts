@@ -72,3 +72,12 @@ export const getCurrentTimeString = () => {
 	const currentTimeString = `${hours}:${minutes}`;
 	return currentTimeString;
 };
+
+export const changedDateFormat = (date: string) => {
+	const dateObject = new Date(date);
+	const day = dateObject.getDate();
+	const month = dateObject.getMonth() + 1;
+	const year = dateObject.getFullYear();
+
+	return `${day < 10 ? '0' : ''}${day}-${month < 10 ? '0' : ''}${month}-${year}`;
+};
