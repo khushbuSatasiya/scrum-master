@@ -92,6 +92,15 @@ const LeaveAndWfh: FC = () => {
 		leaveAndWfh(month, token, project);
 	}, [leaveAndWfh, month, token, project]);
 
+	const formatDate = () => {
+		const dateObject = new Date('2023-09-01');
+		const day = dateObject.getDate();
+		const month = dateObject.getMonth() + 1; // Months are 0-based, so add 1
+		const year = dateObject.getFullYear();
+
+		return `${day < 10 ? '0' : ''}${day}-${month < 10 ? '0' : ''}${month}-${year}`;
+	};
+
 	return (
 		<>
 			<Formik
@@ -151,7 +160,7 @@ const LeaveAndWfh: FC = () => {
 				}}
 			</Formik>
 			{leaveAndWfhData && (
-				<div className='table display-flex-center'>
+				<div className='table flex justify-content--center mt--20'>
 					<table className='customers'>
 						<thead>
 							<tr>
