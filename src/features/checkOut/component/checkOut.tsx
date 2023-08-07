@@ -35,7 +35,6 @@ let initialValuesForHours: any = { hourArr: [] };
 const CheckOut: React.FC = () => {
 	const navigate = useNavigate();
 
-	const [maxTime, setMaxTime] = useState('23:59');
 	const [userTask, setUserTasks] = useState<any>([]);
 	const [projectNames, setProjectNames] = useState<any>([]);
 	const [pId, setPId] = useState<any>([]);
@@ -51,6 +50,8 @@ const CheckOut: React.FC = () => {
 	const { token } = useParams();
 
 	const handleSubmit = (values: FormikValues) => {
+		setIsShowPopUp(true);
+
 		const projects: any = {};
 
 		userTask.forEach((item: any) => {
@@ -75,7 +76,6 @@ const CheckOut: React.FC = () => {
 		// 	hourArr: resultArray
 		// });
 
-		setIsShowPopUp(true);
 		const data = { ...values };
 		const taskArray = data.tasks.map((item: any, index: number) => {
 			return {
@@ -152,16 +152,6 @@ const CheckOut: React.FC = () => {
 				console.error(err);
 			});
 	};
-
-	const updateMaxTime = () => {
-		setMaxTime(getCurrentTimeString());
-	};
-
-	useEffect(() => {
-		updateMaxTime();
-		const intervalId = setInterval(updateMaxTime, 60000);
-		return () => clearInterval(intervalId);
-	}, []);
 
 	const getUserDetails = () => {
 		setIsLoading(true);
@@ -255,7 +245,7 @@ const CheckOut: React.FC = () => {
 					validateOnChange
 					validateOnBlur
 					validateOnMount
-					enableReinitialize
+					// enableReinitialize
 				>
 					{({ setFieldValue, values, handleSubmit }) => {
 						return (
@@ -290,7 +280,9 @@ const CheckOut: React.FC = () => {
 													<TimePicker
 														value={values.time}
 														maxTime={
-															timeSheet.date === getTodayDate() ? maxTime : undefined
+															timeSheet.date === getTodayDate()
+																? getCurrentTimeString()
+																: undefined
 														}
 														className='time-input font--regular border-radius--sm text--black'
 														name='time'
@@ -522,7 +514,8 @@ const CheckOut: React.FC = () => {
 									<div className='display-flex-center mt--20'>
 										<button
 											className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
-											type='submit'
+											type='button'
+											onClick={() => handleSubmit()}
 											disabled={
 												values.array.length === 0 &&
 												values.tasks.length === 1 &&
