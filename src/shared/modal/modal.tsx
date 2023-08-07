@@ -1,6 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { Modal } from 'react-bootstrap';
-import Button from 'shared/form/button';
+import { Button, Modal } from 'react-bootstrap';
 
 export interface IModalProps extends PropsWithChildren {
 	show: boolean;
@@ -25,10 +24,11 @@ const CustomModal: React.FC<IModalProps> = (props) => {
 					</Modal.Title>
 				</Modal.Header>
 			) : (
-				<Button className='modal-close-btn' onClick={props.handleClose}>
-					<span className='text--black'>×</span>
-					<h2 className='text--black'>sdjhcjh</h2>
-				</Button>
+				<div className='flex justify-content--end'>
+					<Button className='close-btn' onClick={props.handleClose}>
+						X
+					</Button>
+				</div>
 			)}
 			<Modal.Body>{props.children}</Modal.Body>
 			{!!props.footer && <Modal.Footer>{props.footer}</Modal.Footer>}

@@ -15,12 +15,13 @@ import {
 import { CUSTOM_STYLE } from 'shared/constants/constants';
 import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
+import CustomModal from 'shared/modal/modal';
+import { getCurrentTimeString, getTodayDate } from 'shared/util/utility';
 
 import '../../checkIn/style/checkIn.scss';
 import '../style/checkOut.scss';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
-import CustomModal from 'shared/modal/modal';
 
 const status = [
 	{ value: 'pending', label: 'Pending' },
@@ -152,12 +153,14 @@ const CheckOut: React.FC = () => {
 			});
 	};
 
+	const updateMaxTime = () => {
+		setMaxTime(getCurrentTimeString());
+	};
+
 	useEffect(() => {
-		const currentTime = new Date();
-		const hours = currentTime.getHours().toString().padStart(2, '0');
-		const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-		const currentTimeString = `${hours}:${minutes}`;
-		setMaxTime(currentTimeString);
+		updateMaxTime();
+		const intervalId = setInterval(updateMaxTime, 60000);
+		return () => clearInterval(intervalId);
 	}, []);
 
 	const getUserDetails = () => {
@@ -276,7 +279,9 @@ const CheckOut: React.FC = () => {
 												<div className='flex align-items--baseline'>
 													<TimePicker
 														value={values.time}
-														maxTime={maxTime}
+														maxTime={
+															timeSheet.date === getTodayDate() ? maxTime : undefined
+														}
 														className='time-input font--regular border-radius--sm text--black'
 														name='time'
 														onChange={(time: any) => {
@@ -380,7 +385,9 @@ const CheckOut: React.FC = () => {
 																		className='input-field task-input font--regular  border-radius--sm text--black'
 																		autoComplete='off'
 																		placeholder='Enter a task'
-																		onChange={(e: any) =>
+																		onChange={(
+																			e: React.ChangeEvent<HTMLInputElement>
+																		) =>
 																			setFieldValue(
 																				`array[${index}].task`,
 																				e.target.value
@@ -437,7 +444,6 @@ const CheckOut: React.FC = () => {
 																			type='button'
 																			onClick={() => {
 																				arrayHelper.remove(index);
-																				// index === 0 && setIsShowExtraField(false);
 																			}}
 																		>
 																			<DeleteIcon width='35px' height='35px' />
@@ -507,6 +513,11 @@ const CheckOut: React.FC = () => {
 										<button
 											className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
 											type='submit'
+											disabled={
+												values.array.length === 0 &&
+												values.tasks.length === 1 &&
+												Object.values(values.tasks[0]).every((value) => value === '')
+											}
 										>
 											Continue
 										</button>
@@ -524,53 +535,54 @@ const CheckOut: React.FC = () => {
 							validateOnChange
 							validateOnBlur
 							enableReinitialize
-							// isInitialValid={false}
 							onSubmit={handleOnHours}
 						>
 							{({ setFieldValue, values, handleSubmit }) => {
 								return (
 									<Form onSubmit={handleSubmit}>
-										{/* <h4 className='text--primary no--margin mb--20 text--center'>Team Report</h4> */}
+										<h4 className='text--primary font-size--22 font--semi-bold no--margin mb--35 text--center'>
+											Please enter project spend hours
+										</h4>
+
 										<div className='flex flex flex--column justify-content--around'>
 											<FieldArray
 												name='hourArr'
 												render={() => {
-													return (
-														// values.hourArr &&
-														// values.hourArr.length > 0 &&
-														values.hourArr.map((item: any, index: number) => (
-															<div
-																key={item.projectName}
-																className='flex justify-content--around mb--25'
-															>
-																<h6 className='text--black no--margin'>
-																	{item.projectName}
-																</h6>
-																<div className='form-item display-flex-center'>
-																	<div className='text-input text--black'>
-																		<Field
-																			name={`hourArr[${index}].hour`}
-																			type='number'
-																			className='input-field hour-input font--regular  border-radius--sm text--black'
-																			autoComplete='off'
-																			placeholder='Enter hours'
-																			onChange={(e: any) =>
-																				setFieldValue(
-																					`hourArr[${index}].hour`,
-																					e.target.value
-																				)
-																			}
-																		/>
-																	</div>
-																	<ErrorMessage
+													return values.hourArr.map((item: any, index: number) => (
+														<div
+															key={item.projectName}
+															className='flex justify-content--around align-items--center mb--25'
+														>
+															<h6 className='font--medium text--black no--margin width--150px'>
+																{item.projectName.charAt(0).toUpperCase() +
+																	item.projectName.slice(1)}
+															</h6>
+															<div className='form-item position--relative'>
+																<div className='text-input text--black'>
+																	<Field
 																		name={`hourArr[${index}].hour`}
-																		component='p'
-																		className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+																		type='number'
+																		className='input-field hour-input font--regular  border-radius--sm text--black'
+																		autoComplete='off'
+																		placeholder='Enter hours'
+																		onChange={(
+																			e: React.ChangeEvent<HTMLInputElement>
+																		) =>
+																			setFieldValue(
+																				`hourArr[${index}].hour`,
+																				e.target.value
+																			)
+																		}
 																	/>
 																</div>
+																<ErrorMessage
+																	name={`hourArr[${index}].hour`}
+																	component='p'
+																	className='position--absolute text--red-400 font-size--xxs pl--10 error-message mt--5 mb--10'
+																/>
 															</div>
-														))
-													);
+														</div>
+													));
 												}}
 											/>
 										</div>
@@ -578,12 +590,6 @@ const CheckOut: React.FC = () => {
 											<button
 												className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
 												type='submit'
-												// onClick={() => {
-												// 	// (errors.hourArr as Array<string>)?.forEach((element, index) => {
-												// 	// 	console.log(element);
-												// 	// 	setFieldTouched(`hourArr[${index}].hour`, true);
-												// 	// });
-												// }}
 											>
 												submit
 											</button>
@@ -598,9 +604,5 @@ const CheckOut: React.FC = () => {
 		)) || <></>
 	);
 };
-
-// const initialValuesForHours = {
-// 	array: []
-// };
 
 export default CheckOut;

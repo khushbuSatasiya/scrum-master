@@ -11,6 +11,7 @@ import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
 import { CUSTOM_STYLE } from 'shared/constants/constants';
 import { notify } from 'shared/components/notification/notification';
+import { getCurrentTimeString } from 'shared/util/utility';
 
 import '../style/checkIn.scss';
 import 'react-time-picker/dist/TimePicker.css';
@@ -22,7 +23,6 @@ const CheckIn: React.FC = () => {
 	const [maxTime, setMaxTime] = useState('23:59');
 	const [projectNames, setProjectNames] = useState<any>([]);
 	const [isLoading, setIsLoading] = useState(true);
-	// const [isShowField, setIsShowField] = useState(false);
 
 	const { token } = useParams();
 
@@ -58,12 +58,16 @@ const CheckIn: React.FC = () => {
 			});
 	};
 
+	const updateMaxTime = () => {
+		setMaxTime(getCurrentTimeString());
+	};
+
 	useEffect(() => {
-		const currentTime = new Date();
-		const hours = currentTime.getHours().toString().padStart(2, '0');
-		const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-		const currentTimeString = `${hours}:${minutes}`;
-		setMaxTime(currentTimeString);
+		updateMaxTime();
+
+		const intervalId = setInterval(updateMaxTime, 60000);
+
+		return () => clearInterval(intervalId);
 	}, []);
 
 	const getUserDetails = () => {
@@ -144,7 +148,7 @@ const CheckIn: React.FC = () => {
 										name='array'
 										render={(arrayHelper) => {
 											return values.array && values.array.length > 0 ? (
-												values.array.map((item: any, index: any) => (
+												values.array.map((item: any, index: number) => (
 													<div
 														key={index}
 														className='fields flex justify-content--between mb--20 align-items--start'
@@ -175,7 +179,7 @@ const CheckIn: React.FC = () => {
 																className='input-field task-input font--regular  border-radius--sm text--black'
 																autoComplete='off'
 																placeholder='Enter a task'
-																onChange={(e: any) =>
+																onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
 																	setFieldValue(
 																		`array[${index}].task`,
 																		e.target.value
@@ -208,7 +212,6 @@ const CheckIn: React.FC = () => {
 																	type='button'
 																	onClick={() => {
 																		arrayHelper.remove(index);
-																		// index === 0 && setIsShowExtraField(false);
 																	}}
 																>
 																	<DeleteIcon width='35px' height='35px' />
@@ -245,7 +248,7 @@ const CheckIn: React.FC = () => {
 													<button
 														className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 														type='button'
-														onClick={(e: any) => {
+														onClick={() => {
 															arrayHelper.push({
 																time: '',
 																project:

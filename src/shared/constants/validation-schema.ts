@@ -69,7 +69,6 @@ const checkInValidationSchema = Yup.object().shape({
 			task: Yup.string()
 				.required('Please add a task you have to perform today')
 				.test('no-leading-space', 'Task cannot start with a space', (value: any) => !value?.startsWith(' '))
-				.matches(/^[a-zA-Z0-9 ]*$/, 'Special characters are not allowed')
 				.strict(true)
 		})
 	)
@@ -90,9 +89,8 @@ const checkOutValidationWithOptSchema = Yup.object().shape({
 				value: Yup.string().required('Please select project name').strict(true).nullable(true)
 			}),
 			task: Yup.string()
-				.required('Please add a task you have to perform today')
+				.required('Please add a task you have performed today')
 				.test('no-leading-space', 'Task cannot start with a space', (value: any) => !value?.startsWith(' '))
-				.matches(/^[a-zA-Z0-9 ]*$/, 'Special characters are not allowed')
 				.strict(true),
 			status: Yup.object().shape({
 				value: Yup.string().required('Please select task status').strict(true).nullable(true)
@@ -120,9 +118,8 @@ const checkOutwithNoTaskValidationSchema = Yup.object().shape({
 				value: Yup.string().required('Please select project name').strict(true).nullable(true)
 			}),
 			task: Yup.string()
-				.required('Please add a task you have to perform today')
+				.required('Please add a task you have performed today')
 				.test('no-leading-space', 'Task cannot start with a space', (value: any) => !value?.startsWith(' '))
-				.matches(/^[a-zA-Z0-9 ]*$/, 'Special characters are not allowed')
 				.strict(true),
 			status: Yup.object().shape({
 				value: Yup.string().required('Please select task status').strict(true).nullable(true)
@@ -150,7 +147,16 @@ const checkOutwithNoTaskValidationSchema = Yup.object().shape({
 const hoursValidationSchema = Yup.object().shape({
 	hourArr: Yup.array().of(
 		Yup.object().shape({
-			hour: Yup.number().required('Field is required')
+			hour: Yup.number()
+				.required('please enter hours')
+				.test('custom-validation', 'Enter up to 16 numbers', function (value) {
+					console.log('value:', value);
+					const inputValue = String(value);
+
+					const numbersCount = inputValue.match(/\d/g)?.length || 0;
+
+					return numbersCount > 0 && numbersCount <= 16;
+				})
 			// .typeError('Hour must be a number')
 			// .integer('Hour must be an integer')
 			// .min(1, 'Hour must be greater than or equal to 1')

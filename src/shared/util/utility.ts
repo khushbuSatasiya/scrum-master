@@ -56,3 +56,19 @@ export const generateColor = () => {
 	const RGBColor = `${x} ,${y}, ${z}`;
 	return RGBColor;
 };
+
+export const getTodayDate = () => {
+	const today = new Date();
+	const year = today.getFullYear();
+	const month = String(today.getMonth() + 1).padStart(2, '0');
+	const day = String(today.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
+};
+
+export const getCurrentTimeString = () => {
+	const currentTime = new Date();
+	const hours = currentTime.getHours().toString().padStart(2, '0');
+	const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+	const currentTimeString = `${hours}:${minutes}`;
+	return currentTimeString;
+};
