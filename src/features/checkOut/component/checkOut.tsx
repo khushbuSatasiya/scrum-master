@@ -267,15 +267,25 @@ const CheckOut: React.FC = () => {
 								)}
 								<Form className='check-in__form check-out flex flex--column' onSubmit={handleSubmit}>
 									<h4 className='text--primary no--margin mb--20 text--center'>Check Out</h4>
+									<p className='text--black text--center no--margin mb--10 font-size--md font--semi-bold mr--15'>
+										Date:
+										<span className='font--regular ml--5 font-size--browser-default'>
+											{timeSheet.date}
+										</span>
+									</p>
 									<h6 className='text--black text--center no--margin mb--25 font-size--md font--semi-bold mr--15'>
 										Check-In:
 										<span className='font--regular ml--5 font-size--browser-default'>
 											{timeSheet.inTime.slice(0, -3)}
 										</span>
 									</h6>
+
 									<>
-										<div className=' mb--25'>
+										<div className='mb--25'>
 											<div className='form-item position--relative'>
+												<p className='text--black font--medium mb--10 font-size--browser-default'>
+													Enter time in 24 hour format.
+												</p>
 												<div className='flex align-items--baseline'>
 													<TimePicker
 														value={values.time}

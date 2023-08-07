@@ -122,7 +122,10 @@ const CheckIn: React.FC = () => {
 						return (
 							<Form className='check-in__form flex flex--column mt--100' onSubmit={handleSubmit}>
 								<h4 className='text--primary no--margin mb--20 text--center'>Check In</h4>
-								<div className=' mb--25'>
+								<div className='mb--25'>
+									<p className='text--black font--medium mb--10 font-size--browser-default'>
+										Enter time in 24 hour format.
+									</p>
 									<div className='form-item flex flex--column justify-content--between mb--20'>
 										<TimePicker
 											value={values.time}
