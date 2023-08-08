@@ -18,6 +18,8 @@ import { API_CONFIG } from 'shared/constants/api';
 import CustomModal from 'shared/modal/modal';
 import { getCurrentTimeString, getTodayDate } from 'shared/util/utility';
 
+import loading from '../../../assets/images/loding.gif';
+
 import '../../checkIn/style/checkIn.scss';
 import '../style/checkOut.scss';
 import 'react-time-picker/dist/TimePicker.css';
@@ -45,6 +47,7 @@ const CheckOut: React.FC = () => {
 	const [isShowPopUp, setIsShowPopUp] = useState(false);
 	const [uniqueProjectNames, setUniqueProjectNames] = useState<any>([]);
 	const [firstPayload, setFirstPayload] = useState<any>({});
+	const [isCheckOutLoading, setIsCheckOutLoading] = useState(false);
 	// const [initialValuesForHours, setInitialValuesForHours] = useState<any>({ hourArr: [] });
 
 	const { token } = useParams();
@@ -143,12 +146,16 @@ const CheckOut: React.FC = () => {
 			OutTime: firstPayload.OutTime,
 			projectHours: finalUniqueIdsAndHours
 		};
+		setIsCheckOutLoading(true);
+
 		httpService
 			.post(`${API_CONFIG.path.checkOut}?token=${token}`, payload)
 			.then(() => {
 				navigate(`/${token}`);
+				setIsCheckOutLoading(false);
 			})
 			.catch((err) => {
+				setIsCheckOutLoading(false);
 				console.error(err);
 			});
 	};
@@ -314,11 +321,14 @@ const CheckOut: React.FC = () => {
 															key={index}
 														>
 															<h6 className='text--black no--margin width--150px'>
-																{data.projectdeatils.projectName}
+																{data.projectdeatils.projectName
+																	.charAt(0)
+																	.toUpperCase() +
+																	data.projectdeatils.projectName.slice(1)}
 															</h6>
 
 															<p className='task-name text--black width--150px'>
-																{data.task}
+																{data.task.charAt(0).toUpperCase() + data.task.slice(1)}
 															</p>
 															<div className='form-item position--relative'>
 																<div className='input-select'>
@@ -594,7 +604,11 @@ const CheckOut: React.FC = () => {
 												className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
 												type='submit'
 											>
-												submit
+												{isCheckOutLoading ? (
+													<img src={loading} alt='loader' className='loading-img' />
+												) : (
+													'submit'
+												)}
 											</button>
 										</div>
 									</Form>

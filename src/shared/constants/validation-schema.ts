@@ -150,7 +150,6 @@ const hoursValidationSchema = Yup.object().shape({
 			hour: Yup.number()
 				.required('please enter hours')
 				.test('custom-validation', 'Enter up to 16 numbers', function (value) {
-					console.log('value:', value);
 					const inputValue = String(value);
 
 					const numbersCount = inputValue.match(/\d/g)?.length || 0;

@@ -11,6 +11,8 @@ import { API_CONFIG } from 'shared/constants/api';
 import { CUSTOM_STYLE } from 'shared/constants/constants';
 import { notify } from 'shared/components/notification/notification';
 
+import loading from '../../../assets/images/loding.gif';
+
 import '../style/checkIn.scss';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
@@ -21,38 +23,42 @@ const CheckIn: React.FC = () => {
 
 	const [projectNames, setProjectNames] = useState<any>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isCheckInLoading, setIsCheckInLoading] = useState(false);
 
 	const { token } = useParams();
 
-	const handleSubmit = (values: FormikValues) => {
-		const uniqueTasks = new Set();
-		const uniqueIdsAndTasks: any = [];
+	const handleSubmit = async (values: FormikValues) => {
+		try {
+			const uniqueTasks = new Set();
+			const uniqueIdsAndTasks: any = [];
 
-		values.array.forEach((item: any) => {
-			const taskName = item.task;
+			values.array.forEach((item: any) => {
+				const taskName = item.task;
 
-			uniqueTasks.add(taskName);
+				uniqueTasks.add(taskName);
 
-			uniqueIdsAndTasks.push({
-				projectId: item.project.value,
-				taskName: taskName
+				uniqueIdsAndTasks.push({
+					projectId: item.project.value,
+					taskName: taskName
+				});
 			});
-		});
 
-		const payload = {
-			token: token,
-			InTime: values.time,
-			tasks: uniqueIdsAndTasks
-		};
-		httpService
-			.post(`${API_CONFIG.path.checkIn}?token=${token}`, payload)
-			.then(() => {
-				notify('You have successfully checked in', 'success');
-				navigate(`/${token}`);
-			})
-			.catch((err) => {
-				console.error(err);
-			});
+			const payload = {
+				token: token,
+				InTime: values.time,
+				tasks: uniqueIdsAndTasks
+			};
+			setIsCheckInLoading(true);
+
+			await httpService.post(`${API_CONFIG.path.checkIn}?token=${token}`, payload);
+
+			notify('You have successfully checked in', 'success');
+			navigate(`/${token}`);
+			setIsCheckInLoading(false);
+		} catch (err) {
+			setIsCheckInLoading(false);
+			console.error(err);
+		}
 	};
 
 	const getUserDetails = () => {
@@ -242,7 +248,11 @@ const CheckIn: React.FC = () => {
 										className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
 										type='submit'
 									>
-										submit
+										{isCheckInLoading ? (
+											<img src={loading} alt='loader' className='loading-img' />
+										) : (
+											'submit'
+										)}
 									</button>
 								</div>
 							</Form>
