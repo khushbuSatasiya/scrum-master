@@ -4,6 +4,7 @@ import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'for
 
 import Select from 'react-select';
 import TimePicker from 'react-time-picker';
+import { isEmpty } from 'lodash';
 
 import { DeleteIcon, PlusIcon } from 'shared/components/icons/icons';
 import {
@@ -48,13 +49,13 @@ const CheckOut: React.FC = () => {
 	const [uniqueProjectNames, setUniqueProjectNames] = useState<any>([]);
 	const [firstPayload, setFirstPayload] = useState<any>({});
 	const [isCheckOutLoading, setIsCheckOutLoading] = useState(false);
+	const [confirmValues, setConfirmValues] = useState<any>({});
 	// const [initialValuesForHours, setInitialValuesForHours] = useState<any>({ hourArr: [] });
 
 	const { token } = useParams();
 
 	const handleSubmit = (values: FormikValues) => {
-		setIsShowPopUp(true);
-
+		setConfirmValues(values);
 		const projects: any = {};
 
 		userTask.forEach((item: any) => {
@@ -114,6 +115,8 @@ const CheckOut: React.FC = () => {
 			}
 		}
 
+		setIsShowPopUp(true);
+
 		const payload = {
 			token: token,
 			tasks: tasks,
@@ -131,7 +134,7 @@ const CheckOut: React.FC = () => {
 			uniqueTasks.add(taskName);
 			uniqueIdsAndHours.push({
 				projectId: '',
-				hours: item.hour || 0
+				hours: Math.round(item.hour) || 0
 			});
 		});
 		const finalUniqueIdsAndHours = uniqueIdsAndHours.map((item: any, index: number) => {
@@ -238,7 +241,9 @@ const CheckOut: React.FC = () => {
 		(!isLoading && (
 			<>
 				<Formik
-					initialValues={formatValues(userTask)}
+					initialValues={
+						isEmpty(firstPayload) && isShowPopUp === false ? formatValues(userTask) : confirmValues
+					}
 					onSubmit={handleSubmit}
 					validationSchema={
 						isShowExtraField
@@ -252,7 +257,7 @@ const CheckOut: React.FC = () => {
 					validateOnChange
 					validateOnBlur
 					validateOnMount
-					// enableReinitialize
+					enableReinitialize
 				>
 					{({ setFieldValue, values, handleSubmit }) => {
 						return (
@@ -284,13 +289,14 @@ const CheckOut: React.FC = () => {
 													Enter time in 24 hour format.
 												</p>
 												<div className='flex align-items--baseline'>
-													<TimePicker
+													<Field
 														value={values.time}
 														maxTime={
 															timeSheet.date === getTodayDate()
 																? getCurrentTimeString()
 																: undefined
 														}
+														component={TimePicker}
 														className='time-input font--regular border-radius--sm text--black'
 														name='time'
 														onChange={(time: any) => {
@@ -349,7 +355,7 @@ const CheckOut: React.FC = () => {
 																<ErrorMessage
 																	name={`tasks[${index}].status.value`}
 																	component='p'
-																	key={index}
+																	key={data.id}
 																	className='text--red-400 font-size--xxs pl--10 error-message mt--10'
 																/>
 															</div>
@@ -574,6 +580,7 @@ const CheckOut: React.FC = () => {
 																<div className='text-input text--black'>
 																	<Field
 																		name={`hourArr[${index}].hour`}
+																		value={item.hour || ''}
 																		type='number'
 																		className='input-field hour-input font--regular  border-radius--sm text--black'
 																		autoComplete='off'
