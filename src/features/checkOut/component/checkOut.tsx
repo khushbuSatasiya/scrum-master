@@ -452,6 +452,8 @@ const CheckOut: React.FC = () => {
 																			type='button'
 																			onClick={() => {
 																				arrayHelper.remove(index);
+																				values.array.length === 1 &&
+																					setIsShowExtraField(false);
 																			}}
 																		>
 																			<DeleteIcon width='35px' height='35px' />
@@ -464,6 +466,8 @@ const CheckOut: React.FC = () => {
 																			type='button'
 																			onClick={() => {
 																				arrayHelper.remove(index);
+																				values.array.length === 1 &&
+																					setIsShowExtraField(false);
 																			}}
 																		>
 																			<DeleteIcon width='35px' height='35px' />
