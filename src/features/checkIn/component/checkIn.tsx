@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
 
 import Select from 'react-select';
-import TimePicker from 'react-time-picker';
 
 import { DeleteIcon, PlusIcon } from 'shared/components/icons/icons';
 import { checkInValidationSchema } from 'shared/constants/validation-schema';
@@ -11,16 +10,15 @@ import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
 import { CUSTOM_STYLE } from 'shared/constants/constants';
 import { notify } from 'shared/components/notification/notification';
-import { getCurrentTimeString } from 'shared/util/utility';
 
 import '../style/checkIn.scss';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
+import Time from './time';
 
 const CheckIn: React.FC = () => {
 	const navigate = useNavigate();
 
-	const [maxTime, setMaxTime] = useState('23:59');
 	const [projectNames, setProjectNames] = useState<any>([]);
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -46,7 +44,6 @@ const CheckIn: React.FC = () => {
 			InTime: values.time,
 			tasks: uniqueIdsAndTasks
 		};
-
 		httpService
 			.post(`${API_CONFIG.path.checkIn}?token=${token}`, payload)
 			.then(() => {
@@ -57,18 +54,6 @@ const CheckIn: React.FC = () => {
 				console.error(err);
 			});
 	};
-
-	const updateMaxTime = () => {
-		setMaxTime(getCurrentTimeString());
-	};
-
-	useEffect(() => {
-		updateMaxTime();
-
-		const intervalId = setInterval(updateMaxTime, 60000);
-
-		return () => clearInterval(intervalId);
-	}, []);
 
 	const getUserDetails = () => {
 		httpService
@@ -94,18 +79,6 @@ const CheckIn: React.FC = () => {
 		getUserDetails();
 	}, []);
 
-	const currentTime = new Date().toLocaleTimeString([], {
-		hour: '2-digit',
-		minute: '2-digit'
-	});
-
-	const initOpt = { label: 'project names...', value: '' };
-
-	const initialValues = {
-		time: currentTime,
-		array: [] as any
-	};
-
 	return (
 		<>
 			{!isLoading && (
@@ -127,17 +100,12 @@ const CheckIn: React.FC = () => {
 										Enter time in 24 hour format.
 									</p>
 									<div className='form-item flex flex--column justify-content--between mb--20'>
-										<TimePicker
-											value={values.time}
-											maxTime={maxTime}
-											className='time-input font--regular border-radius--sm text--black'
-											name='time'
+										<Time
+											values={values}
+											name={'time'}
 											onChange={(time: any) => {
 												setFieldValue('time', time);
 											}}
-											format='HH:mm'
-											clockIcon={null}
-											autoFocus
 										/>
 
 										<ErrorMessage
@@ -285,5 +253,17 @@ const CheckIn: React.FC = () => {
 		</>
 	);
 };
+
+const currentTime = new Date().toLocaleTimeString([], {
+	hour: '2-digit',
+	minute: '2-digit'
+});
+
+const initialValues = {
+	time: currentTime,
+	array: [] as any
+};
+
+const initOpt = { label: 'project names...', value: '' };
 
 export default CheckIn;
