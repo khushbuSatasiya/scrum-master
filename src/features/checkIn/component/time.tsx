@@ -10,7 +10,7 @@ interface IProps {
 	clockIcon?: any;
 }
 
-const Time: FC<IProps> = ({ values, onChange, name, format = 'HH:mm', clockIcon }) => {
+const Time: FC<IProps> = ({ values, onChange, name, format = 'HH:mm' }) => {
 	const [maxTime, setMaxTime] = useState('23:59');
 
 	const updateMaxTime = () => {
@@ -31,7 +31,7 @@ const Time: FC<IProps> = ({ values, onChange, name, format = 'HH:mm', clockIcon 
 			name={name}
 			onChange={onChange}
 			format={format}
-			clockIcon={clockIcon}
+			clockIcon={null}
 			autoFocus
 		/>
 	);
