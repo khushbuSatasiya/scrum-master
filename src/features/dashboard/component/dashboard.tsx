@@ -80,7 +80,9 @@ const Dashboard: FC = () => {
 											</p>
 											<div className='flex ml--10 mb--10'>
 												<BulletIcon />
-												<p className='text--black break-word--word'>{task.task}</p>
+												<p className='text--black break-word--word line-height--24'>
+													{task.task}
+												</p>
 											</div>
 										</div>
 									);
@@ -121,7 +123,9 @@ const Dashboard: FC = () => {
 												</p>
 												<div className='flex ml--10 mb--10'>
 													<BulletIcon />
-													<p className='text--black break-word--word'>{task.task}</p>
+													<p className='text--black break-word--word line-height--24'>
+														{task.task}
+													</p>
 												</div>
 											</div>
 										);
@@ -147,7 +151,7 @@ const Dashboard: FC = () => {
 												</p>
 												<div className='flex ml--10 mb--10'>
 													<BulletIcon />
-													<p className='text--black break-word--word'>
+													<p className='text--black break-word--word line-height--24'>
 														{task.task} <span className='status ml--5'>{task.status}</span>
 													</p>
 												</div>

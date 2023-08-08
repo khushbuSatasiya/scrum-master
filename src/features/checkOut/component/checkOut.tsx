@@ -257,7 +257,7 @@ const CheckOut: React.FC = () => {
 					validateOnChange
 					validateOnBlur
 					validateOnMount
-					enableReinitialize
+					enableReinitialize={isShowPopUp}
 				>
 					{({ setFieldValue, values, handleSubmit }) => {
 						return (
@@ -301,6 +301,8 @@ const CheckOut: React.FC = () => {
 														name='time'
 														onChange={(time: any) => {
 															setFieldValue('time', time);
+															setFieldValue('tasks', values.tasks);
+															setFieldValue('array', values.array);
 														}}
 														format='HH:mm'
 														clockIcon={null}
