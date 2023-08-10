@@ -43,6 +43,13 @@
 	display: none;
 }
 
+.user-details {
+	.user-img {
+		width: 150px;
+		height: 150px;
+	}
+}
+
 @media only screen and (max-width: 768px) {
 	.check-in__form {
 		max-width: 715px;

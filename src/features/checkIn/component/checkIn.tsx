@@ -16,6 +16,7 @@ import loading from '../../../assets/images/loding.gif';
 import '../style/checkIn.scss';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
+import UserDetail from './userDetail';
 
 const CheckIn: React.FC = () => {
 	const navigate = useNavigate();
@@ -23,6 +24,7 @@ const CheckIn: React.FC = () => {
 	const [projectNames, setProjectNames] = useState<any>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isCheckInLoading, setIsCheckInLoading] = useState(false);
+	const [userDetail, setUserDetail] = useState<any>([]);
 
 	const { token } = useParams();
 
@@ -65,12 +67,16 @@ const CheckIn: React.FC = () => {
 			.get(`${API_CONFIG.path.getUserDetails}?token=${token}`)
 
 			.then((res) => {
+				console.log('res:', res.findUser);
 				const projectNames = res.projects.map((data: any) => {
 					return {
 						label: data.projectName,
 						value: data.id
 					};
 				});
+
+				setUserDetail(res.findUser[0]);
+
 				setProjectNames(projectNames);
 				setIsLoading(false);
 			})
@@ -86,6 +92,8 @@ const CheckIn: React.FC = () => {
 
 	return (
 		<>
+			<UserDetail userDetail={userDetail} isLoading={isLoading} />
+
 			{!isLoading && (
 				<Formik
 					initialValues={initialValues}
@@ -98,27 +106,13 @@ const CheckIn: React.FC = () => {
 				>
 					{({ setFieldValue, values, handleSubmit }) => {
 						return (
-							<Form className='check-in__form flex flex--column mt--100' onSubmit={handleSubmit}>
+							<Form className='check-in__form flex flex--column mt--25' onSubmit={handleSubmit}>
 								<h4 className='text--primary no--margin mb--20 text--center'>Check In</h4>
 								<div className='mb--25'>
 									<p className='text--black font--medium mb--10 font-size--browser-default'>
 										Time (24 hour)
 									</p>
 									<div className='form-item flex flex--column justify-content--between mb--20'>
-										{/* <Time
-											values={values}
-											name={'time'}
-											onChange={(time: any) => {
-												setFieldValue('time', time);
-											}}
-										/> */}
-
-										{/* <ErrorMessage
-											name={'time'}
-											component='p'
-											className='text--red-400 font-size--xxs pl--10 error-message mt--10'
-										/> */}
-
 										<Field
 											values={values}
 											name={'time'}
@@ -290,11 +284,6 @@ const CheckIn: React.FC = () => {
 		</>
 	);
 };
-
-// const currentTime = new Date().toLocaleTimeString([], {
-// 	hour: '2-digit',
-// 	minute: '2-digit'
-// });
 
 const initialValues = {
 	time: '',
