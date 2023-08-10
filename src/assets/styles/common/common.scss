@@ -642,6 +642,10 @@
 	@include paddingLeft(20px);
 }
 
+.pl--25 {
+	@include paddingLeft(25px);
+}
+
 .pl--30 {
 	@include paddingLeft(30px);
 }
