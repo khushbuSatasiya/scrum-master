@@ -18,8 +18,7 @@ import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
 import CustomModal from 'shared/modal/modal';
 import { getCurrentTimeString, getTodayDate } from 'shared/util/utility';
-
-import loading from '../../../assets/images/loding.gif';
+import Button from 'shared/form/button';
 
 import '../../checkIn/style/checkIn.scss';
 import '../style/checkOut.scss';
@@ -447,9 +446,10 @@ const CheckOut: React.FC = () => {
 
 																{index !== values.array.length - 1 ? (
 																	<div className='flex width--100px'>
-																		<button
+																		<Button
 																			className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 																			type='button'
+																			defaultClass={false}
 																			onClick={() => {
 																				arrayHelper.remove(index);
 																				values.array.length === 1 &&
@@ -457,13 +457,14 @@ const CheckOut: React.FC = () => {
 																			}}
 																		>
 																			<DeleteIcon width='35px' height='35px' />
-																		</button>
+																		</Button>
 																	</div>
 																) : (
 																	<div className='flex width--100px'>
-																		<button
+																		<Button
 																			className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 																			type='button'
+																			defaultClass={false}
 																			onClick={() => {
 																				arrayHelper.remove(index);
 																				values.array.length === 1 &&
@@ -471,11 +472,12 @@ const CheckOut: React.FC = () => {
 																			}}
 																		>
 																			<DeleteIcon width='35px' height='35px' />
-																		</button>
+																		</Button>
 
-																		<button
+																		<Button
 																			className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 																			type='button'
+																			defaultClass={false}
 																			onClick={() => {
 																				arrayHelper.insert(index + 1, {
 																					project:
@@ -498,16 +500,17 @@ const CheckOut: React.FC = () => {
 																			)}
 																		>
 																			<PlusIcon width='35px' height='35px' />
-																		</button>
+																		</Button>
 																	</div>
 																)}
 															</div>
 														))
 													) : (
 														<div className='flex justify-content--end'>
-															<button
+															<Button
 																className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 																type='button'
+																defaultClass={false}
 																onClick={(e: any) => {
 																	e.preventDefault();
 																	e.stopPropagation();
@@ -526,7 +529,7 @@ const CheckOut: React.FC = () => {
 																}}
 															>
 																<PlusIcon width='35px' height='35px' />
-															</button>
+															</Button>
 														</div>
 													);
 												}}
@@ -534,9 +537,10 @@ const CheckOut: React.FC = () => {
 										</div>
 									</>
 									<div className='display-flex-center mt--20'>
-										<button
+										<Button
 											className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
 											type='button'
+											defaultClass={false}
 											onClick={() => handleSubmit()}
 											disabled={
 												values.array.length === 0 &&
@@ -545,7 +549,7 @@ const CheckOut: React.FC = () => {
 											}
 										>
 											Continue
-										</button>
+										</Button>
 									</div>
 								</Form>
 							</>
@@ -613,16 +617,14 @@ const CheckOut: React.FC = () => {
 											/>
 										</div>
 										<div className='display-flex-center mt--20'>
-											<button
+											<Button
+												loading={isCheckOutLoading}
+												type={'submit'}
+												defaultClass={false}
 												className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
-												type='submit'
 											>
-												{isCheckOutLoading ? (
-													<img src={loading} alt='loader' className='loading-img' />
-												) : (
-													'submit'
-												)}
-											</button>
+												Submit
+											</Button>
 										</div>
 									</Form>
 								);

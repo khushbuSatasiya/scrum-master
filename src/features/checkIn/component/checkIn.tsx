@@ -10,8 +10,7 @@ import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
 import { CUSTOM_STYLE } from 'shared/constants/constants';
 import { notify } from 'shared/components/notification/notification';
-
-import loading from '../../../assets/images/loding.gif';
+import Button from 'shared/form/button';
 
 import '../style/checkIn.scss';
 import 'react-time-picker/dist/TimePicker.css';
@@ -172,31 +171,34 @@ const CheckIn: React.FC = () => {
 														</div>
 														{index !== values.array.length - 1 ? (
 															<div className='flex width--100px'>
-																<button
+																<Button
 																	className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 																	type='button'
+																	defaultClass={false}
 																	onClick={() => {
 																		arrayHelper.remove(index);
 																	}}
 																>
 																	<DeleteIcon width='35px' height='35px' />
-																</button>
+																</Button>
 															</div>
 														) : (
 															<div className='flex width--100px'>
-																<button
+																<Button
 																	className='login-btn ml--5 font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 																	type='button'
+																	defaultClass={false}
 																	onClick={() => {
 																		arrayHelper.remove(index);
 																	}}
 																>
 																	<DeleteIcon width='35px' height='35px' />
-																</button>
+																</Button>
 
-																<button
+																<Button
 																	className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 																	type='button'
+																	defaultClass={false}
 																	onClick={() => {
 																		arrayHelper.insert(index + 1, {
 																			time: '',
@@ -215,16 +217,17 @@ const CheckIn: React.FC = () => {
 																	)}
 																>
 																	<PlusIcon width='35px' height='35px' />
-																</button>
+																</Button>
 															</div>
 														)}
 													</div>
 												))
 											) : (
 												<div className='flex justify-content--end'>
-													<button
+													<Button
 														className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 														type='button'
+														defaultClass={false}
 														onClick={() => {
 															arrayHelper.push({
 																time: '',
@@ -237,23 +240,21 @@ const CheckIn: React.FC = () => {
 														}}
 													>
 														<PlusIcon width='35px' height='35px' />
-													</button>
+													</Button>
 												</div>
 											);
 										}}
 									/>
 								</div>
 								<div className='display-flex-center mt--20'>
-									<button
+									<Button
 										className='submit-btn font-size--lg text--uppercase text--white border-radius--default no--border'
 										type='submit'
+										loading={isCheckInLoading}
+										defaultClass={false}
 									>
-										{isCheckInLoading ? (
-											<img src={loading} alt='loader' className='loading-img' />
-										) : (
-											'submit'
-										)}
-									</button>
+										Submit
+									</Button>
 								</div>
 							</Form>
 						);
