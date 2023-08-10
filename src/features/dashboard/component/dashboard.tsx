@@ -59,14 +59,14 @@ const Dashboard: FC = () => {
 					{userName && <h3 className='text--primary mb--20'>Hello, {userName}</h3>}
 					<div className='dashboard mb--25'>
 						<div className='flex align-items--start justify-content--evenly'>
-							<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
+							<h6 className='text--black no--margin mb--25 font-size--24 font--semi-bold'>
 								Check-In Time:
 								<span className='font--regular ml--5 font-size--xxl'>
 									{timeSheet.inTime.slice(0, -3)}
 								</span>
 							</h6>
 							<div className='flex flex--column'>
-								<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>
+								<h6 className='text--black no--margin mb--10 font-size--xxl font--medium'>
 									Planned Tasks:
 								</h6>
 								{userTask.length === 0 && (
@@ -103,51 +103,60 @@ const Dashboard: FC = () => {
 				<div className='flex flex--column mb--100'>
 					<h3 className='text--primary mb--20'>Hello, {userName}</h3>
 					<div className='dashboard'>
+						<h6 className='text--black no--margin mb--15 pl--17'>
+							Date: <span className='font--regular'> {timeSheet.date}</span>
+						</h6>
 						<div className='check-wrapper flex align-items--start justify-content--evenly'>
 							<div className='check-in__content'>
-								<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
+								<h6 className='text--black no--margin mb--25 font-size--24 font--semi-bold'>
 									Check-In Time:
 									<span className='font--regular ml--5 font-size--xxl'>
 										{timeSheet.inTime.slice(0, -3)}
 									</span>
 								</h6>
 								<div className='flex flex--column'>
-									<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>
+									<h6 className='text--black no--margin mb--10 font-size--xxl font--medium'>
 										Planned Tasks:
 									</h6>
-									{userTask.map((task: any, index: number) => {
-										return (
-											<div key={index}>
-												<p className='text--black font-size--xxl font--regular mb--5'>
-													{task.projectdeatils.projectName}
-												</p>
-												<div className='flex ml--10 mb--10'>
-													<BulletIcon />
-													<p className='text--black break-word--word line-height--24'>
-														{task.task}
+									{timeSheet.taskCreate === 'NO TASK PROVIDED' ? (
+										<p className='text--black font-size--xxl font--regular mb--5'>No task added</p>
+									) : (
+										userTask.map((task: any, index: number) => {
+											return (
+												<div key={index}>
+													<p className='text--black font-size--xxl font--regular mb--5'>
+														{task.projectdeatils.projectName.charAt(0).toUpperCase() +
+															task.projectdeatils.projectName.slice(1)}
 													</p>
+													<div className='flex ml--10 mb--10'>
+														<BulletIcon />
+														<p className='text--black break-word--word line-height--24'>
+															{task.task}
+														</p>
+													</div>
 												</div>
-											</div>
-										);
-									})}
+											);
+										})
+									)}
 								</div>
 							</div>
 							<div className='check-out__content'>
-								<h6 className='text--black no--margin mb--25 font-size--28 font--semi-bold'>
+								<h6 className='text--black no--margin mb--25 font-size--24 font--semi-bold'>
 									Check-Out Time:
 									<span className='font--regular ml--5 font-size--xxl'>
 										{timeSheet.outTime.slice(0, -3)}
 									</span>
 								</h6>
 								<div className='flex flex--column'>
-									<h6 className='text--black no--margin mb--10 font-size--24 font--medium'>
+									<h6 className='text--black no--margin mb--10 font-size--xxl font--medium'>
 										Completed Tasks:
 									</h6>
 									{userTask.map((task: any, index: number) => {
 										return (
 											<div key={index}>
 												<p className='text--black font-size--xxl font--regular mb--5'>
-													{task.projectdeatils.projectName}
+													{task.projectdeatils.projectName.charAt(0).toUpperCase() +
+														task.projectdeatils.projectName.slice(1)}
 												</p>
 												<div className='flex ml--10 mb--10'>
 													<BulletIcon />

@@ -67,10 +67,19 @@ export const getTodayDate = () => {
 
 export const getCurrentTimeString = () => {
 	const currentTime = new Date();
-	const hours = currentTime.getHours().toString().padStart(2, '0');
-	const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-	const currentTimeString = `${hours}:${minutes}`;
-	return currentTimeString;
+	// const hours = currentTime.getHours().toString().padStart(2, '0');
+	// const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+	// const currentTimeString = `${hours}:${minutes}`;
+	// return currentTimeString;
+
+	const currentTimeString = currentTime.toLocaleString('en-US', {
+		hour12: false
+	});
+	const timePart = currentTimeString.split(',')[1].trim();
+	const [hours, minutes] = timePart.split(':').slice(0, 2);
+	const formattedTime = `${hours}:${minutes}`;
+
+	return formattedTime;
 };
 
 export const changedDateFormat = (date: string) => {

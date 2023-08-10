@@ -60,7 +60,10 @@ const resetPasswordFormValidationSchema = Yup.object().shape({
 });
 
 const checkInValidationSchema = Yup.object().shape({
-	time: Yup.string().required('Please enter time in valid format').strict(true).nullable(),
+	// time: Yup.string().required('Please enter time in valid format').strict(true).nullable(),
+	time: Yup.string()
+		.matches(/^[0-9]{2}:[0-9]{2}$/, 'Please enter valid time format (hh:mm)')
+		.required('Time is required'),
 	array: Yup.array().of(
 		Yup.object().shape({
 			project: Yup.object().shape({
@@ -75,7 +78,10 @@ const checkInValidationSchema = Yup.object().shape({
 });
 
 const checkOutValidationWithOptSchema = Yup.object().shape({
-	time: Yup.string().required('Please enter time in valid format').strict(true).nullable(),
+	// time: Yup.string().required('Please enter time in valid format').strict(true).nullable(),
+	time: Yup.string()
+		.matches(/^[0-9]{2}:[0-9]{2}$/, 'Please enter valid time format (hh:mm)')
+		.required('Time is required'),
 	tasks: Yup.array().of(
 		Yup.object().shape({
 			status: Yup.object().shape({
@@ -100,7 +106,10 @@ const checkOutValidationWithOptSchema = Yup.object().shape({
 });
 
 const checkOutValidationSchema = Yup.object().shape({
-	time: Yup.string().required('Please enter time in valid format').strict(true).nullable(),
+	// time: Yup.string().required('Please enter time in valid format').strict(true).nullable(),
+	time: Yup.string()
+		.matches(/^[0-9]{2}:[0-9]{2}$/, 'Please enter valid time format (hh:mm)')
+		.required('Time is required'),
 	tasks: Yup.array().of(
 		Yup.object().shape({
 			status: Yup.object().shape({
@@ -111,7 +120,10 @@ const checkOutValidationSchema = Yup.object().shape({
 });
 
 const checkOutwithNoTaskValidationSchema = Yup.object().shape({
-	time: Yup.string().required('Please enter time in valid format').strict(true).nullable(),
+	// time: Yup.string().required('Please enter time in valid format').strict(true).nullable(),
+	time: Yup.string()
+		.matches(/^[0-9]{2}:[0-9]{2}$/, 'Please enter valid time format (hh:mm)')
+		.required('Time is required'),
 	array: Yup.array().of(
 		Yup.object().shape({
 			project: Yup.object().shape({

@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Formik, FormikValues, Field, ErrorMessage, Form, FieldArray } from 'formik';
 
 import Select from 'react-select';
-import TimePicker from 'react-time-picker';
 import { isEmpty } from 'lodash';
 
 import { DeleteIcon, PlusIcon } from 'shared/components/icons/icons';
@@ -17,7 +16,6 @@ import { CUSTOM_STYLE } from 'shared/constants/constants';
 import httpService from 'shared/services/http.service';
 import { API_CONFIG } from 'shared/constants/api';
 import CustomModal from 'shared/modal/modal';
-import { getCurrentTimeString, getTodayDate } from 'shared/util/utility';
 
 import loading from '../../../assets/images/loding.gif';
 
@@ -202,11 +200,6 @@ const CheckOut: React.FC = () => {
 	const initOpt = { label: 'project names...', value: '' };
 
 	const formatValues = (userTask: any) => {
-		const currentTime = new Date().toLocaleTimeString([], {
-			hour: '2-digit',
-			minute: '2-digit'
-		});
-
 		if (userTask.length > 0) {
 			const tasksArray = userTask.map((task: any) => {
 				return {
@@ -217,13 +210,13 @@ const CheckOut: React.FC = () => {
 			});
 
 			return {
-				time: currentTime,
+				time: '',
 				array: [] as any,
 				tasks: tasksArray
 			};
 		} else {
 			return {
-				time: currentTime,
+				time: '',
 				array: [] as any,
 				tasks: [
 					{
@@ -289,7 +282,7 @@ const CheckOut: React.FC = () => {
 													Enter time in 24 hour format.
 												</p>
 												<div className='flex align-items--baseline'>
-													<Field
+													{/* <Field
 														value={values.time}
 														maxTime={
 															timeSheet.date === getTodayDate()
@@ -306,6 +299,30 @@ const CheckOut: React.FC = () => {
 														}}
 														format='HH:mm'
 														clockIcon={null}
+													/> */}
+													<Field
+														values={values}
+														name={'time'}
+														type='text'
+														className='input-field new-time__input font--regular border-radius--sm text--black'
+														autoComplete='off'
+														placeholder='00:00'
+														onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+															let formattedTime = e.target.value.replace(/\D/g, '');
+
+															if (formattedTime.length > 2) {
+																formattedTime = `${formattedTime.slice(
+																	0,
+																	2
+																)}:${formattedTime.slice(2)}`;
+															}
+															if (formattedTime.length > 5) {
+																return;
+															}
+															setFieldValue('time', formattedTime);
+															setFieldValue('tasks', values.tasks);
+															setFieldValue('array', values.array);
+														}}
 													/>
 												</div>
 
@@ -418,7 +435,7 @@ const CheckOut: React.FC = () => {
 																	<ErrorMessage
 																		name={`array[${index}].task`}
 																		component='p'
-																		className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+																		className='text--red-400 font-size--xxs error-message mt--10'
 																	/>
 																</div>
 

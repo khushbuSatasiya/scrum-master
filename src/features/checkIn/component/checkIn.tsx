@@ -16,7 +16,6 @@ import loading from '../../../assets/images/loding.gif';
 import '../style/checkIn.scss';
 import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
-import Time from './time';
 
 const CheckIn: React.FC = () => {
 	const navigate = useNavigate();
@@ -103,21 +102,48 @@ const CheckIn: React.FC = () => {
 								<h4 className='text--primary no--margin mb--20 text--center'>Check In</h4>
 								<div className='mb--25'>
 									<p className='text--black font--medium mb--10 font-size--browser-default'>
-										Enter time in 24 hour format.
+										Time (24 hour)
 									</p>
 									<div className='form-item flex flex--column justify-content--between mb--20'>
-										<Time
+										{/* <Time
 											values={values}
 											name={'time'}
 											onChange={(time: any) => {
 												setFieldValue('time', time);
 											}}
-										/>
+										/> */}
 
-										<ErrorMessage
+										{/* <ErrorMessage
 											name={'time'}
 											component='p'
 											className='text--red-400 font-size--xxs pl--10 error-message mt--10'
+										/> */}
+
+										<Field
+											values={values}
+											name={'time'}
+											type='text'
+											className='input-field new-time__input font--regular border-radius--sm text--black'
+											autoComplete='off'
+											placeholder='00:00'
+											onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+												let formattedTime = e.target.value.replace(/\D/g, '');
+
+												if (formattedTime.length > 2) {
+													formattedTime = `${formattedTime.slice(0, 2)}:${formattedTime.slice(
+														2
+													)}`;
+												}
+												if (formattedTime.length > 5) {
+													return;
+												}
+												setFieldValue('time', formattedTime);
+											}}
+										/>
+										<ErrorMessage
+											name={'time'}
+											component='p'
+											className='text--red-400 font-size--xxs  error-message mt--10'
 										/>
 									</div>
 
@@ -221,7 +247,8 @@ const CheckIn: React.FC = () => {
 													</div>
 												))
 											) : (
-												<div className='flex justify-content--end'>
+												<div className='flex justify-content--end align-items--center'>
+													<h6 className='text--black no--margin mr--15'>Add task here...</h6>
 													<button
 														className='login-btn font-size--lg text--uppercase text--white border-radius--default no--border no--bg'
 														type='button'
@@ -264,13 +291,13 @@ const CheckIn: React.FC = () => {
 	);
 };
 
-const currentTime = new Date().toLocaleTimeString([], {
-	hour: '2-digit',
-	minute: '2-digit'
-});
+// const currentTime = new Date().toLocaleTimeString([], {
+// 	hour: '2-digit',
+// 	minute: '2-digit'
+// });
 
 const initialValues = {
-	time: currentTime,
+	time: '',
 	array: [] as any
 };
 

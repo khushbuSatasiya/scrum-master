@@ -638,8 +638,16 @@
 	@include paddingLeft(15px);
 }
 
+.pl--17 {
+	@include paddingLeft(17px);
+}
+
 .pl--20 {
 	@include paddingLeft(20px);
+}
+
+.pl--25 {
+	@include paddingLeft(25px);
 }
 
 .pl--30 {
@@ -1374,4 +1382,10 @@
 .loading-img {
 	width: 30px;
 	height: 30px;
+}
+
+.new-time__input {
+	width: 70px;
+	height: 38px;
+	@include padding(10px);
 }
