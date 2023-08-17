@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import isEmpty from 'lodash/isEmpty';
 
-import { ProfileIcon } from 'shared/components/icons/icons';
+import { EmailIcon, ProfileIcon } from 'shared/components/icons/icons';
 import Spinner from 'shared/components/spinner/spinner';
 
 interface IProps {
@@ -25,21 +25,26 @@ const UserDetail: FC<IProps> = ({ userDetail, isLoading }) => {
 						className='display-flex-center min-height--380px'
 						style={{ height: '150px', display: 'flex', justifyContent: 'center' }}
 					>
-						<p className='text--white font--medium font-size--25 line-height--30px'>No Data Found</p>
+						<p className='font--medium font-size--25 line-height--30px'>No Data Found</p>
 					</div>
 				)}
 
 				{!isLoading && !isEmpty(userDetail) && (
 					<div className='flex' style={{ height: '150px' }}>
 						<div className='user-img'>
-							<img src={userDetail.avtar} alt='avtar' className='image' />
+							<img src={userDetail.avtar} alt='avtar' className='image border-radius--md' />
 						</div>
-						<div>
-							<h2>{userDetail.realName}</h2>
-							<div>
-								<div className='flex'>
+						<div className='ml--15'>
+							<h2 className='font-size--lg mb--10 font--semi-bold'>{userDetail.realName}</h2>
+							<div className='flex'>
+								<div className='flex mr--10'>
 									<ProfileIcon />
 									<p>{userDetail.bio}</p>
+								</div>
+
+								<div className='flex mr--10'>
+									<EmailIcon />
+									<p>{userDetail.email}</p>
 								</div>
 							</div>
 						</div>

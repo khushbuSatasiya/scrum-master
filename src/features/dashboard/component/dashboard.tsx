@@ -9,6 +9,7 @@ import '../style/dashboard.scss';
 
 const Dashboard: FC = () => {
 	const navigate = useNavigate();
+
 	const [action, setAction] = useState('');
 	const [statusCode, setStatusCode] = useState(null);
 	const [timeSheet, setTimeSheet] = useState<any>([]);
@@ -16,6 +17,7 @@ const Dashboard: FC = () => {
 	const [userName, setUserName] = useState('');
 
 	const { token }: any = useParams();
+	console.log('timeSheet:', timeSheet);
 
 	const getUserDetails = useCallback((token: any) => {
 		httpService
